@@ -12,34 +12,35 @@
 */
 
 Route::get('/', function () {
-    // $contact1 = new App\Contact(['nom'=>'reda', 'contactable_id' =>'1', 'contactable_type'=>'App\Personne','prenom'=>'moh']);
-    // $contact1->save();
-    $pers = new App\Personne();  
-    $entr = new App\Entreprise(['nom'=>'dephystech','email'=>'dephystech@dephystech.com','siren'=>'2121']);
+   
+    // // $contact1 = new App\Contact(['nom'=>'reda', 'contactable_id' =>'1', 'contactable_type'=>'App\Personne','prenom'=>'moh']);
+    // // $contact1->save();
+    // $pers = new App\Personne();  
+    // $entr = new App\Entreprise(['nom'=>'dephystech','email'=>'dephystech@dephystech.com','siren'=>'2121']);
     
-    $entr->save();
+    // $entr->save();
 
-    $entr->nom = 'newName';
-    $pers->nom ='reda';
+    // $entr->nom = 'newName';
+    // $pers->nom ='reda';
 
-    $entr->save();
-    $pers->save();
+    // $entr->save();
+    // $pers->save();
 
 
-    $usr = new App\User(['nom'=>'dephystech','email'=>'dephystech@ds','password'=>'bla','prenom' => 'haha']);
-    $usr->save();
+    // $usr = new App\User(['nom'=>'dephystech','email'=>'dephystech@ds','password'=>'bla','prenom' => 'haha']);
+    // $usr->save();
 
     $usr2 = App\User::first();
-    var_dump($usr2.'\n');
-    $usr2 = $usr2->personne();
+    Debugbar::info($usr2);
+    // $usr2 = $usr2->personne();
     
     //echo $usr2->id;
     // echo $usr2->nom;
-    var_dump($usr2);
+    //var_dump($usr2);
    //var_dump($usr2->personne());
     // var_dump($usr2->personne);
     
-    dd(2);
+    //dd(2);
 
 //    $pers->save();
 //     dd($pers->id);
