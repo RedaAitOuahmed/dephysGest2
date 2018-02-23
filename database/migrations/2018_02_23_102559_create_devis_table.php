@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProjetsTable extends Migration
+class CreateDevisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateProjetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('projets', function (Blueprint $table) {
+        Schema::create('devis', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nom')->unique();
-            $table->string('description')->nullable();
-            $table->integer('added_by_id');
+            $table->float('reduction');
+            $table->float('rentabilite');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateProjetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('projets');
+        Schema::dropIfExists('devis');
     }
 }

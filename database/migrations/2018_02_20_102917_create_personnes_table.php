@@ -17,6 +17,7 @@ class CreatePersonnesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->nullable();
             $table->string('prenom')->nullable();
+            $table->timestamps();
             
         });
         // Schema::table('personnes', function($table){

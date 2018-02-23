@@ -16,9 +16,9 @@ class Tache extends Model
         return $this->hasMany('App\Fichier');
     }
 
-    public function created_by()
+    public function added_by()
     {
-       return $this->belongsTo('App\User');  // will check for a created_by_id
+       return $this->belongsTo('App\User','added_by'); 
     }
 
     public function assigned_to()

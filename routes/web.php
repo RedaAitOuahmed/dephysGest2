@@ -13,9 +13,9 @@
 
 Route::get('/', function () {
    
-    // // $contact1 = new App\Contact(['nom'=>'reda', 'contactable_id' =>'1', 'contactable_type'=>'App\Personne','prenom'=>'moh']);
-    // // $contact1->save();
-    // $pers = new App\Personne();  
+    //$contact1 = new App\Contact(['nom'=>'reda', 'contactable_id' =>'1', 'contactable_type'=>'App\Personne','prenom'=>'moh']);
+    // $contact1->save();
+    $pers = new App\Personne(['nom'=>'dephystech','email'=>'depdshystech@dephystech.com','prenom'=>'2121']);  
     // $entr = new App\Entreprise(['nom'=>'dephystech','email'=>'dephystech@dephystech.com','siren'=>'2121']);
     
     // $entr->save();
@@ -24,14 +24,23 @@ Route::get('/', function () {
     // $pers->nom ='reda';
 
     // $entr->save();
-    // $pers->save();
+    
+    $pers->save();
+    Debugbar::info($pers);
+    
+    $test = App\Personne::first();
+    Debugbar::info($test);
+    
+    
+    $test->tel = '1212';
+    $test->save();
 
 
     // $usr = new App\User(['nom'=>'dephystech','email'=>'dephystech@ds','password'=>'bla','prenom' => 'haha']);
     // $usr->save();
 
-    $usr2 = App\User::first();
-    Debugbar::info($usr2);
+    // $usr2 = App\Personne::find(2)->user()->first();
+     Debugbar::info("fdf");
     // $usr2 = $usr2->personne();
     
     //echo $usr2->id;

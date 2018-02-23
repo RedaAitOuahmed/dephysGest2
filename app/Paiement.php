@@ -4,15 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Categorie extends Model
+class Paiement extends Model
 {
-    public function produits()
+    public function payable()
     {
-        return $this->hasMany('App\Produit');
+        return $this->morphTo();
     }
-
     public function added_by()
     {
         return $this->belongsTo('App\User','added_by');
     }
+    
 }

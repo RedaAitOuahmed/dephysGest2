@@ -8,7 +8,7 @@ class Contact extends Model
 {
     
     
-    public $timestamps = false;
+
     protected $fillable = ['nom','relation','tel','email','adresse','fax'];
    
 
@@ -21,6 +21,12 @@ class Contact extends Model
     {
         return $this->hasMany('App\Produits','fournisseurs_produits','id','id');
     }
+
+    public function added_by()
+    {
+        return $this->belongsTo('App\User','added_by');
+    }
+    
 
     public function dummyDisplay()
     {

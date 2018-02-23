@@ -16,9 +16,9 @@ class Projet extends Model
         return $this->hasManyThrough('App\Fichier', 'App\Tache');
     }
 
-    public function created_by()
+    public function added_by()
     {
-       return $this->belongsTo('App\User');  // will check for a created_by_id
+       return $this->belongsTo('App\User','added_by'); 
     }
 
    

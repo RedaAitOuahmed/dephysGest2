@@ -21,7 +21,7 @@ class CreateTachesTable extends Migration
             $table->date('dateLimite');
             $table->string('etat');
             $table->integer('projet_id');
-            $table->integer('created_by_id');
+            $table->integer('added_by_id');
             $table->timestamps();
         });
     }

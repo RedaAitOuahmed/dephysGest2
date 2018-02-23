@@ -13,7 +13,7 @@ class Fichier extends Model
 
     public function added_by()
     {
-       return $this->belongsTo('App\User');  // will check for a created_by_id
+       return $this->belongsTo('App\User','added_by'); 
     }
 
 }
