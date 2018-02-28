@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Schema;
 class Contact extends Model
 {
     
@@ -28,10 +28,11 @@ class Contact extends Model
     }
     
 
-    public function dummyDisplay()
+    public function getAllColumns()
     {
-             echo "Imma contact";
-    }
+        return Schema::getColumnListing(parent::getTable());
+        
+    } 
 
 
     

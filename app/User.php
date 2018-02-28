@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'password',
+        'password','email'
     ];
 
     /**
@@ -45,7 +45,7 @@ class User extends Authenticatable
 
         if(!$this->personneBooted && $this->personne()->first() != null)
         {           
-            $this->personne = $this->contacts()->first();
+            $this->personne = $this->personne()->first();
             $this->personneBooted = true;
         }
     
@@ -53,19 +53,22 @@ class User extends Authenticatable
     public function save(array $options = [])
     {
         $result = parent::save($options);   
-        $this->bootPersonne();     
+        $this->bootPersonne();  
         $this->personne()->save($this->personne);
+        
     }
 
     public function __set($key, $value)
     {
         $this->bootPersonne();
-        if( ! in_array($key,Schema::getColumnListing(parent::getTable())))
-        {
-            $this->personne->$key = $value;
-        }else
+        
+        if(in_array($key,Schema::getColumnListing(parent::getTable())))
         {
             parent::__set($key,$value);
+        }
+        if ( in_array($key,$this->personne->getAllColumns()) )
+        {
+            $this->personne->$key = $value;
         }
     }
 
@@ -79,7 +82,14 @@ class User extends Authenticatable
         {
             return parent::__get($key);
         }
-    }   
+    }
+    public function getAllColumns()
+    {
+        return array_merge(
+            Schema::getColumnListing(parent::getTable()),
+            $this->personne->getAllColumns()
+        );
+    }    
 
     public function personne()
     {

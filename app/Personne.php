@@ -42,12 +42,14 @@ class Personne extends Model
     public function __set($key, $value)
     {
         $this->bootContact();
-        if( ! in_array($key,Schema::getColumnListing(parent::getTable())))
-        {
-            $this->contact->$key = $value;
-        }else
+        if( in_array($key,Schema::getColumnListing(parent::getTable())))
         {
             parent::__set($key,$value);
+           
+        }
+        if( in_array($key,$this->contact->getAllColumns()) )
+        {
+            $this->contact->$key = $value;
         }
     }
 
@@ -62,6 +64,14 @@ class Personne extends Model
             return parent::__get($key);
         }
     }
+
+    public function getAllColumns()
+    {
+        return array_merge(
+            Schema::getColumnListing(parent::getTable()),
+            $this->contact->getAllColumns()
+        );
+    } 
 
 
     public function user()
