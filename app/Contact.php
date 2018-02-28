@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\Schema;
 class Contact extends Model
 {
     
-    
+    /**
+     * the generale class of a contact
+     * a contact can be : just a contact, a Personne, an Entreprise or a user
+     */
 
     protected $fillable = ['nom','relation','tel','email','adresse','fax'];
    

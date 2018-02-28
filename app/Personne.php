@@ -9,8 +9,18 @@ class Personne extends Model
 {
 
     protected $fillable = ['user_id','prenom','entreprise','fonction'];
+   /**
+     *  @var Contact a Contact instance that holds all the Contact Info
+     */
     protected $contact;
+    /**
+     * @var Boolean that indicates whether or not the $contact was retrieved from the database 
+     */
     protected $contactBooted;
+
+    /**
+     * initiates a new Contact instance and affects it to $contact.
+     */
 
     function __construct($attributes = [])
     {       
@@ -18,6 +28,10 @@ class Personne extends Model
         $this->contact = new Contact($attributes);
         $this->contactBooted = false;    
     }
+    /**
+     * tires to retrive the Contact instance that belongs to this instance from the Database.
+     * sets contactBooted to true if this was done.
+     */
 
     private function bootContact()
     {
@@ -29,6 +43,16 @@ class Personne extends Model
         }  
     }
 
+    /**
+     * @overrides Model::save(array $options = [])
+     * 1 : use Model::save to save $this instance;
+     * boots the contact
+     * 2 : uses save method on $contact
+     * @returns the AND of both 1 and 2 operations
+     */
+
+    
+
     public function save(array $options = [])
     {
         $result = parent::save($options);
@@ -38,6 +62,17 @@ class Personne extends Model
         return $this->contact->save() && $result;
 
     }
+    /**
+     * overrides Model::__set
+     * sets an attribute whether it belongs to this Instance or to the contact instance.
+     * sets it in both instances if it belongs to both instances.
+     * if the attribute is  on this model table
+     *  sets it on the this instance,
+     * if the attribute is  on this contact table
+     *  sets it on the contact model.
+     */
+
+
 
     public function __set($key, $value)
     {
@@ -53,6 +88,11 @@ class Personne extends Model
         }
     }
 
+     /**
+     * @overrides Model::__get
+     * returns the attribute either from this model or from the contact model
+     */
+
     public function __get($key)
     {
         $this->bootContact();        
@@ -64,6 +104,10 @@ class Personne extends Model
             return parent::__get($key);
         }
     }
+    /**
+     * @returns an array containing the names of all the columns
+     * including this model's columns and the contact model's columns
+     */
 
     public function getAllColumns()
     {

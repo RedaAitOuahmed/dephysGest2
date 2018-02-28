@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
+    /**
+     * a document can be either a BonDeCommande or a FactureBrouillon or a Devis
+     */
     public function documentable()
     {
         return $this->morphTo();

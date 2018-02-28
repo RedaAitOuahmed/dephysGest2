@@ -6,10 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class FactureBrouillon extends Model
 {
-
+ /**
+     *  $document is a Document instance that holds all the Document Info
+     */
     protected $document;
+    /**
+     * Boolean that indicates whether or not the $document was retrieved from the database 
+     */
     protected $documentBooted;
-    
+    /**
+     * initiates a new Document instance and affects it to document.
+     */
     function __construct($attributes = [])
     {       
         parent::__construct($attributes);         
@@ -17,6 +24,10 @@ class FactureBrouillon extends Model
         $this->documentBooted = false;     
         
     }
+    /**
+     * tires to retrive the Document instance that belongs to this instance from the Database.
+     * sets documentBooted to true if this was done.
+     */
 
     private function documentBoot()
     {
@@ -26,6 +37,15 @@ class FactureBrouillon extends Model
             $this->documentBooted = true;
         }
     }
+
+    /**
+     * @overrides Model::save(array $options = [])
+     * 1 : use Model::save to save $this instance;
+     * boots the document
+     * 2 : uses save method on $document
+     * @returns the AND of both 1 and 2 operations
+     */
+
 
 
     public function save(array $options = [])
@@ -38,6 +58,15 @@ class FactureBrouillon extends Model
 
     }
 
+       /**
+     * overrides Model::__set
+     * sets an attribute wether it belongs to this Instance or to the document instance.
+     * if the attribute is not on this model table
+     *  sets it on the document instance,
+     * else
+     *  sets it on this model.
+     */
+
     public function __set($key, $value)
     {
         $this->documentBoot();
@@ -49,6 +78,11 @@ class FactureBrouillon extends Model
             parent::__set($key,$value);
         }
     }
+        /**
+     * @overrides Model::__get
+     * returns the attribute either from this model or from the document model
+     */
+
 
     public function __get($key)
     {
@@ -61,6 +95,11 @@ class FactureBrouillon extends Model
             return parent::__get($key);
         }
     }
+
+    /**
+     * defines the relation to documents table
+     */
+    
     public function documents()
     {
         return $this->morphMany('App\Document', 'documentable');

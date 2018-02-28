@@ -27,18 +27,29 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+     /**
+     *  @var Personne a Personne instance that holds all the Personne (and Contact) Info
+     */
 
     protected $personne;
+    /**
+     * @var Boolean  indicates whether or not the $personne was retrieved from the database 
+     */
 
     protected $personneBooted;
-
+    /**
+     * initiates this instance and a new Personne instance and affects it to $personne.
+     */
     function __construct($attributes = [])
     {
         parent::__construct($attributes);
         $this->personne = new \App\Personne($attributes);
         $this->personneBooted = false;
     }
-
+     /**
+     * tires to retrive the Personne instance that belongs to this instance from the Database.
+     * sets personneBooted to true if this was done.
+     */
 
     private function bootPersonne()
     {
@@ -49,7 +60,15 @@ class User extends Authenticatable
             $this->personneBooted = true;
         }
     
-    } 
+    }
+
+     /**
+     * @overrides Model::save(array $options = [])
+     * 1 : use Model::save to save $this instance;
+     * boots $personne
+     * 2 : uses save method on $personne
+     * @returns the AND of both 1 and 2 operations
+     */ 
     public function save(array $options = [])
     {
         $result = parent::save($options);   
@@ -57,6 +76,15 @@ class User extends Authenticatable
         $this->personne()->save($this->personne);
         
     }
+    /**
+     * overrides Model::__set
+     * sets an attribute whether it belongs to this Instance or to the contact instance.
+     * sets it in both instances if it belongs to both instances.
+     * if the attribute is  on this model table
+     *  sets it on the this instance,
+     * if the attribute is  on this personne (or contact) table
+     *  sets it on the contact model.
+     */
 
     public function __set($key, $value)
     {
@@ -72,6 +100,11 @@ class User extends Authenticatable
         }
     }
 
+    /**
+     * @overrides Model::__get
+     * returns the attribute either from this model or from the personne (or contact) model
+     */
+
     public function __get($key)
     {
         $this->bootPersonne();
@@ -83,6 +116,10 @@ class User extends Authenticatable
             return parent::__get($key);
         }
     }
+     /**
+     * @returns an array containing the names of all the columns
+     * including this model's columns and the personne(and contact) model's columns
+     */
     public function getAllColumns()
     {
         return array_merge(
@@ -97,7 +134,9 @@ class User extends Authenticatable
         // and matched with the user_id on the personne table
         return $this->hasOne('App\Personne','user_id','id');
     }
-
+    /**
+     * contacts a user added and so on
+     */
     public function contacts_added()
     {
         return $this->hasMany('App\Contact','added_by');
@@ -111,6 +150,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Tache','added_by');
     }
+    /**
+     * taches assigned to this  user.
+     */
     public function taches_assigned()
     {
         return $this->belongsToMany('App\Tache','taches_users','id','id');

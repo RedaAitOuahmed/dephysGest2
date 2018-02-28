@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class FactureFinale extends Model
 {
+    /**
+     * still not sure abt this one 
+     */
     public function documents()
     {
         return $this->morphMany('App\Document', 'documentable');

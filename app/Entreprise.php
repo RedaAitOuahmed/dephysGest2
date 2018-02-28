@@ -8,17 +8,29 @@ use Illuminate\Support\Facades\Schema;
 class Entreprise extends Model
 {
     protected $fillable = ['siren','siret','assujetiTVA','numTVA'];
+    /**
+     *  $contact is a Contact instance that holds all the Contact Info
+     */
     protected $contact;
+    /**
+     * Boolean that indicates whether or not the $contact was retrieved from the database 
+     */
     protected $contactBooted;
+
+    /**
+     * initiates a new Contact instance and affects it to $contact.
+     */
 
     function __construct($attributes = [])
     {       
         parent::__construct($attributes);                   
         $this->contact = new Contact($attributes);
-        $this->contactBooted = false;  
-        
+        $this->contactBooted = false;    
     }
-
+    /**
+     * tires to retrive the Contact instance that belongs to this instance from the Database.
+     * sets contactBooted to true if this was done.
+     */
     private function bootContact()
     {
 
@@ -29,6 +41,15 @@ class Entreprise extends Model
         }  
     }
 
+    /**
+     * @overrides Model::save(array $options = [])
+     * 1 : use Model::save to save $this instance;
+     * boots the contact
+     * 2 : uses save method on $contact
+     * @returns the AND of both 1 and 2 operations
+     */
+
+
     public function save(array $options = [])
     {
         $result = parent::save($options);
@@ -38,6 +59,17 @@ class Entreprise extends Model
         return $this->contact->save() && $result;
 
     }
+
+       /**
+     * overrides Model::__set
+     * sets an attribute whether it belongs to this Instance or to the document instance.
+     * 
+     * if the attribute is not  on this model table
+     *  sets it on the contact model.
+     * else
+     * sets it on the this instance,
+     */
+
 
     public function __set($key, $value)
     {
@@ -50,6 +82,11 @@ class Entreprise extends Model
             parent::__set($key,$value);
         }
     }
+
+     /**
+     * @overrides Model::__get
+     * returns the attribute either from this model or from the document model
+     */
 
     public function __get($key)
     {
