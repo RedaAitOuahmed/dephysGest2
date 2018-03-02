@@ -156,6 +156,34 @@ class Personne extends Model
         
     }
 
+     /**
+     * @return Boolean to indicate wether this personne is a  user of the application or not
+     */
+    public function isUser()
+    {
+        if($this->user()->first() == null )
+        {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public function delete()
+    {
+        if(! $this->isUser())
+        {
+            $this->bootContact(); 
+            parent::delete();
+            if($this->contact != null)
+            {
+                $this->contact->delete();
+            }                   
+        }
+    }
+
+
    
 
 }

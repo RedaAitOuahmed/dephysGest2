@@ -13,53 +13,53 @@
 
 Route::get('/', function () {
    
-    $contact1 = new App\User(['nom'=>'reda',
-            'relation' => 'client',
-            'tel' => '07751264',
-            'adresse' => '100 impasse de toto',
-            'fax' => '012354698',
-            'contactable_id' =>'1',
-            'contactable_type'=>'App\Personne',
-            'prenom'=>'moh',
-            'addedBy' => '0'
-            ]);
-    $contact1->email = 'aaaa@bbbgb.com';
-    $contact1->save();
+    // $contact1 = new App\User(['nom'=>'reda',
+    //         'relation' => 'client',
+    //         'tel' => '07751264',
+    //         'adresse' => '100 impasse de toto',
+    //         'fax' => '012354698',
+    //         'contactable_id' =>'1',
+    //         'contactable_type'=>'App\Personne',
+    //         'prenom'=>'moh',
+    //         'addedBy' => '0'
+    //         ]);
+    // $contact1->email = 'aaaa@bbbgb.com';
+    // $contact1->save();
 
-    $contact1 = new App\User([
-        'nom'=>'reda',
-        'relation' => 'client',
-        'email'=>'aaaa@bbbb.com',
-        'tel' => '07751264',
-        'adresse' => '100 impasse de toto',
-        'fax' => '012354698',
-        'contactable_id' =>'1',
-        'contactable_type'=>'App\Personne',
-        'prenom'=>'moh',
-        'addedBy' => '0'
-        ]);
-    // $contact1->prenom = 'a Name';
-     $contact1->save();
+    // $contact1 = new App\User([
+    //     'nom'=>'reda',
+    //     'relation' => 'client',
+    //     'email'=>'aaaa@bbbb.com',
+    //     'tel' => '07751264',
+    //     'adresse' => '100 impasse de toto',
+    //     'fax' => '012354698',
+    //     'contactable_id' =>'1',
+    //     'contactable_type'=>'App\Personne',
+    //     'prenom'=>'moh',
+    //     'addedBy' => '0'
+    //     ]);
+    // // $contact1->prenom = 'a Name';
+    //  $contact1->save();
     
 
-    //     // $test = App\User::first();
-    //     // $test->email = "new mailaa2aaa";
-    //     // $test->nom ="blabla";
-    //     // $test->prenom = "shit";
-    //     // $test->save();
+    // //     // $test = App\User::first();
+    // //     // $test->email = "new mailaa2aaa";
+    // //     // $test->nom ="blabla";
+    // //     // $test->prenom = "shit";
+    // //     // $test->save();
 
 
-    $pers = new App\Personne(['nom'=>'dephystech','email'=>'depdshystech@dephystech.com','prenom'=>'2121']);  
+    // $pers = new App\Personne(['nom'=>'dephystech','email'=>'depdshystech@dephystech.com','prenom'=>'2121']);  
     $entr = new App\Entreprise(['nom'=>'dephystech','email'=>'dephystech@dephystech.com','siren'=>'2121']);
     
     $entr->save();
 
-    $entr->nom = 'newName';
-    $pers->nom ='reda';
+    // $entr->nom = 'newName';
+    // $pers->nom ='reda';
 
-    $entr->save();
+    // $entr->save();
     
-    $pers->save();
+    // $pers->save();
 //     Debugbar::info($pers);
     
 //     $test = App\Personne::first();
@@ -99,7 +99,33 @@ Route::get('/', function () {
 //     // //var_dump($pers);
 //     // //$a = new App\Personne('bla');
 //     // // $cont->save();
-    
+// $entr = new App\Entreprise(['nom'=>'dephystech','email'=>'dephystech@dephystech.com','siren'=>'2121']);
+
+// $entr->save();
+// $contact = App\Entreprise::first();
+// $contact = App\Contact::find(6);
+// $contact->delete();
+
+// var_dump($contact->contactable);
+// return new App\Http\Resources\EntrepriseResource($contact->contactable()->first());
+
+// $contact1 = new App\Contact([
+//     'nom'=>'reda',
+//     'relation' => 'client',
+//     'email'=>'aaaa@bbbb.com',
+//     'tel' => '07751264',
+//     'adresse' => '100 impasse de toto',
+//     'fax' => '012354698',
+//     ]);
+// // $contact1->prenom = 'a Name';
+//  $contact1->save();
+
+$contact = App\Entreprise::first();
+$contact->delete();
+// $contact = App\Contact::find(9);
+// $contact->delete();
+// $contact = App\Contact::find(10);
+// $contact->delete();
  return view('welcome');
 })->name('home');
 

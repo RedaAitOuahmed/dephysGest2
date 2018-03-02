@@ -122,6 +122,16 @@ class Entreprise extends Model
         return $this->contact->addedBy();
     }
 
+    public function delete()
+    {       
+        $this->bootContact(); 
+        parent::delete();
+        if($this->contact != null)
+        {
+            $this->contact->delete();
+        }                   
+    }
+
    
    
 }
