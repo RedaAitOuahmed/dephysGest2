@@ -138,6 +138,24 @@ class Personne extends Model
         return $this->belongsToMany('App\Personne');
     }
 
+
+
+    /**
+     * functions that belong to Contact
+     */
+    public function produits()
+    {
+        $this->bootContact();  
+        return $this->contact->produits();
+    }
+
+    public function addedBy()
+    {
+        $this->bootContact();  
+        return $this->contact->addedBy();
+        
+    }
+
    
 
 }

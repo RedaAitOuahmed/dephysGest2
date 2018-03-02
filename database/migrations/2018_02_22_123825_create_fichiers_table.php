@@ -16,7 +16,7 @@ class CreateFichiersTable extends Migration
         Schema::create('fichiers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('chemin');
-            $table->integer('added_by');
+            $table->integer('addedBy');
             $table->integer('tache_id');
             $table->timestamps();
         });

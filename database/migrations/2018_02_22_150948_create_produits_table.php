@@ -20,7 +20,7 @@ class CreateProduitsTable extends Migration
             $table->float('prixAchat')->nullable();
             $table->float('prixVente')->nullable();
             $table->float('TVA')->nullable();
-            $table->integer('added_by_id');
+            $table->integer('addedBy_id');
             $table->boolean('estAchete')->nullable();
             $table->boolean('estVendu')->nullable();
             $table->string('description')->nullable();

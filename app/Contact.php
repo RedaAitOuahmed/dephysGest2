@@ -12,7 +12,7 @@ class Contact extends Model
      * a contact can be : just a contact, a Personne, an Entreprise or a user
      */
 
-    protected $fillable = ['nom','relation','tel','email','adresse','fax'];
+    protected $fillable = ['nom','relation','tel','email','adresse','fax','addedBy'];
    
 
     public function contactable()
@@ -25,9 +25,9 @@ class Contact extends Model
         return $this->hasMany('App\Produits','fournisseurs_produits','id','id');
     }
 
-    public function added_by()
+    public function addedBy()
     {
-        return $this->belongsTo('App\User','added_by');
+        return $this->belongsTo('App\User','addedBy');
     }
     
 

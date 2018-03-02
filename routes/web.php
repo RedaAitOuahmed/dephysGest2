@@ -13,53 +13,53 @@
 
 Route::get('/', function () {
    
-    // $contact1 = new App\User(['nom'=>'reda',
-    //         'relation' => 'client',
-    //         'tel' => '07751264',
-    //         'adresse' => '100 impasse de toto',
-    //         'fax' => '012354698',
-    //         'contactable_id' =>'1',
-    //         'contactable_type'=>'App\Personne',
-    //         'prenom'=>'moh',
-    //         'added_by' => '0'
-    //         ]);
-    // $contact1->email = 'aaaa@bbbgb.com';
-    // $contact1->save();
+    $contact1 = new App\User(['nom'=>'reda',
+            'relation' => 'client',
+            'tel' => '07751264',
+            'adresse' => '100 impasse de toto',
+            'fax' => '012354698',
+            'contactable_id' =>'1',
+            'contactable_type'=>'App\Personne',
+            'prenom'=>'moh',
+            'addedBy' => '0'
+            ]);
+    $contact1->email = 'aaaa@bbbgb.com';
+    $contact1->save();
 
-    // $contact1 = new App\User([
-    //     'nom'=>'reda',
-    //     'relation' => 'client',
-    //     'email'=>'aaaa@bbbb.com',
-    //     'tel' => '07751264',
-    //     'adresse' => '100 impasse de toto',
-    //     'fax' => '012354698',
-    //     'contactable_id' =>'1',
-    //     'contactable_type'=>'App\Personne',
-    //     'prenom'=>'moh',
-    //     'added_by' => '0'
-    //     ]);
-    // // $contact1->prenom = 'a Name';
-    //  $contact1->save();
+    $contact1 = new App\User([
+        'nom'=>'reda',
+        'relation' => 'client',
+        'email'=>'aaaa@bbbb.com',
+        'tel' => '07751264',
+        'adresse' => '100 impasse de toto',
+        'fax' => '012354698',
+        'contactable_id' =>'1',
+        'contactable_type'=>'App\Personne',
+        'prenom'=>'moh',
+        'addedBy' => '0'
+        ]);
+    // $contact1->prenom = 'a Name';
+     $contact1->save();
     
 
-        // $test = App\User::first();
-        // $test->email = "new mailaa2aaa";
-        // $test->nom ="blabla";
-        // $test->prenom = "shit";
-        // $test->save();
+    //     // $test = App\User::first();
+    //     // $test->email = "new mailaa2aaa";
+    //     // $test->nom ="blabla";
+    //     // $test->prenom = "shit";
+    //     // $test->save();
 
 
-//     $pers = new App\Personne(['nom'=>'dephystech','email'=>'depdshystech@dephystech.com','prenom'=>'2121']);  
-//     // $entr = new App\Entreprise(['nom'=>'dephystech','email'=>'dephystech@dephystech.com','siren'=>'2121']);
+    $pers = new App\Personne(['nom'=>'dephystech','email'=>'depdshystech@dephystech.com','prenom'=>'2121']);  
+    $entr = new App\Entreprise(['nom'=>'dephystech','email'=>'dephystech@dephystech.com','siren'=>'2121']);
     
-//     // $entr->save();
+    $entr->save();
 
-//     // $entr->nom = 'newName';
-//     // $pers->nom ='reda';
+    $entr->nom = 'newName';
+    $pers->nom ='reda';
 
-//     // $entr->save();
+    $entr->save();
     
-//     $pers->save();
+    $pers->save();
 //     Debugbar::info($pers);
     
 //     $test = App\Personne::first();
@@ -101,14 +101,24 @@ Route::get('/', function () {
 //     // // $cont->save();
     
  return view('welcome');
-});
-Route::get('/adminLogin', 'Auth\AdminLoginController@loginForm')->name('adminLogin');
-Route::post('/adminLoginSubmit', 'Auth\AdminLoginController@login')->name('adminLoginSubmit');
+})->name('home');
 
-Route::get('/adminHome', function()
-{
-    return view('adminHome');
-})->name('adminHome');
+Route::prefix('admin')->group(function () {
+    Route::get('/login', 'Auth\AdminLoginController@loginForm')->name('adminLogin');
+    Route::post('/loginSubmit', 'Auth\AdminLoginController@login')->name('adminLoginSubmit');
+
+    Route::get('/home', function() {
+            return view('adminHome');
+    })->name('adminHome');
+   
+});
+
+Route::prefix('contact')->group(function () {
+    Route::get('/add', 'Contact@add')->name('addContact');
+    Route::post('/addSubmit', 'Contact@addSubmit')->name('addContactSubmit');
+    Route::get('/displayAll','Contact@displayAll')->name('displayAllContacts');
+   
+});
 
 
 

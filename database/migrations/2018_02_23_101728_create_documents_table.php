@@ -22,7 +22,7 @@ class CreateDocumentsTable extends Migration
 
             //Relation attributes
             $table->integer('contact_id');
-            $table->integer('added_by');
+            $table->integer('addedBy');
 
             $table->string('documentable_type');
             $table->string('documentable_id');

@@ -18,7 +18,7 @@ class CreatePaiementsTable extends Migration
             $table->float('somePayee');
             $table->string('payable_type');
             $table->string('payable_id');
-            $table->integer('added_by');
+            $table->integer('addedBy');
             $table->timestamps();
         });
     }

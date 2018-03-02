@@ -17,8 +17,8 @@ class FactureFinale extends Model
     {
         return $this->morphMany('App\Document', 'payable');
     }
-    public function finalized_by()
+    public function finalizedBy()
     {
-        return $this->brlongsTo('App\User','finalized_by');
+        return $this->brlongsTo('App\User','finalizedBy');
     }
 }

@@ -55,7 +55,7 @@ class Entreprise extends Model
         $result = parent::save($options);
         $this->bootContact();
         $this->contact->contactable_id = $this->id;
-        $this->contact->contactable_type = '\App\Entreprise';        
+        $this->contact->contactable_type = 'App\Entreprise';        
         return $this->contact->save() && $result;
 
     }
@@ -109,6 +109,19 @@ class Entreprise extends Model
     {
         return $this->belongsToMany('App\Personne');
     }
+    
+    public function produits()
+    {
+        $this->bootContact();  
+        return $this->contact->produits();
+    }
+
+    public function addedBy()
+    {
+        $this->bootContact();  
+        return $this->contact->addedBy();
+    }
+
    
    
 }

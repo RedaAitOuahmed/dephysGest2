@@ -139,16 +139,16 @@ class User extends Authenticatable
      */
     public function contacts_added()
     {
-        return $this->hasMany('App\Contact','added_by');
+        return $this->hasMany('App\Contact','addedBy');
     }
 
     public function projets_added()
     {
-        return $this->hasMany('App\Projet','added_by');
+        return $this->hasMany('App\Projet','addedBy');
     }
     public function taches_added()
     {
-        return $this->hasMany('App\Tache','added_by');
+        return $this->hasMany('App\Tache','addedBy');
     }
     /**
      * taches assigned to this  user.
@@ -159,28 +159,28 @@ class User extends Authenticatable
     }
     public function fichiers_added()
     {
-        return $this->hasMany('App\Fichier','added_by');
+        return $this->hasMany('App\Fichier','addedBy');
     }
 
     public function produits_added()
     {
-        return $this->hasMany('App\Produit','added_by');
+        return $this->hasMany('App\Produit','addedBy');
     }
     public function categories_added()
     {
-        return $this->hasMany('App\Categorie','added_by');
+        return $this->hasMany('App\Categorie','addedBy');
     }
     public function documents_added()
     {
-        return $this->hasMany('App\Document','added_by');
+        return $this->hasMany('App\Document','addedBy');
     }
     public function paiements_added()
     {
-        return $this->hasMany('App\Document','added_by');
+        return $this->hasMany('App\Document','addedBy');
     }
     public function factures_finales_added()
     {
-        return $this->hasMany('App\FactureFinale','finalized_by');
+        return $this->hasMany('App\FactureFinale','finalizedBy');
     }
 
 

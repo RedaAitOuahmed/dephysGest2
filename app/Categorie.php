@@ -14,8 +14,8 @@ class Categorie extends Model
         return $this->hasMany('App\Produit');
     }
 
-    public function added_by()
+    public function addedBy()
     {
-        return $this->belongsTo('App\User','added_by');
+        return $this->belongsTo('App\User','addedBy');
     }
 }

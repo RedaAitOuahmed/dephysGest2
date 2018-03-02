@@ -11,9 +11,9 @@ class Produit extends Model
         return $this->belongsTo('App\Categorie');
     }
 
-    public function added_by()
+    public function addedBy()
     {
-        return $this->belongsTo('App\User','added_by');
+        return $this->belongsTo('App\User','addedBy');
     }
     public function fournisseurs()
     {

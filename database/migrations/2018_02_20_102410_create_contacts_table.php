@@ -23,7 +23,7 @@ class CreateContactsTable extends Migration
             $table->string('fax')->nullable();
             $table->string('contactable_type')->nullable();
             $table->integer('contactable_id')->nullable();
-            $table->integer('added_by');
+            $table->integer('addedBy');
             $table->timestamps();
         });
         Schema::table('contacts', function($table){

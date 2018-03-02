@@ -17,7 +17,7 @@ class CreateProjetsTable extends Migration
             $table->increments('id');
             $table->string('nom')->unique();
             $table->string('description')->nullable();
-            $table->integer('added_by_id');
+            $table->integer('addedBy_id');
             $table->timestamps();
         });
     }

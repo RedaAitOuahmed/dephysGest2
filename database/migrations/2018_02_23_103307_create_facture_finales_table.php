@@ -15,7 +15,7 @@ class CreateFactureFinalesTable extends Migration
     {
         Schema::create('facture_finales', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('finalized_by');
+            $table->integer('finalizedBy');
             $table->timestamps();
         });
     }
