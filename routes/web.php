@@ -50,9 +50,9 @@ Route::get('/', function () {
 
 
     // $pers = new App\Personne(['nom'=>'dephystech','email'=>'depdshystech@dephystech.com','prenom'=>'2121']);  
-    $entr = new App\Entreprise(['nom'=>'dephystech','email'=>'dephystech@dephystech.com','siren'=>'2121']);
+    // $entr = new App\Entreprise(['nom'=>'dephystech','email'=>'dephystech@dephystech.com','siren'=>'2121']);
     
-    $entr->save();
+    // $entr->save();
 
     // $entr->nom = 'newName';
     // $pers->nom ='reda';
@@ -120,8 +120,8 @@ Route::get('/', function () {
 // // $contact1->prenom = 'a Name';
 //  $contact1->save();
 
-$contact = App\Entreprise::first();
-$contact->delete();
+// $contact = App\Entreprise::first();
+// $contact->delete();
 // $contact = App\Contact::find(9);
 // $contact->delete();
 // $contact = App\Contact::find(10);
