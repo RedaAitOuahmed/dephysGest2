@@ -129,6 +129,22 @@ Route::get('/', function () {
  return view('welcome');
 })->name('home');
 
+
+
+//For testing 
+
+Route::get('/redirect', function () {
+    $query = http_build_query([
+        'client_id'     => '5',
+        'redirect_uri'  => 'http://127.0.0.1:8000/test',
+        'response_type' => 'code',
+        'scope'         => '',
+    ]);
+
+    return redirect('http://passport.dev/oauth/authorize?' . $query);
+});
+//endTesting
+
 Route::prefix('admin')->group(function () {
     Route::get('/login', 'Auth\AdminLoginController@loginForm')->name('adminLogin');
     Route::post('/loginSubmit', 'Auth\AdminLoginController@login')->name('adminLoginSubmit');
