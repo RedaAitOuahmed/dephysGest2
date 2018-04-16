@@ -148,7 +148,6 @@ Route::get('/redirect', function () {
 Route::prefix('admin')->group(function () {
     Route::get('/login', 'Auth\AdminLoginController@loginForm')->name('adminLogin');
     Route::post('/loginSubmit', 'Auth\AdminLoginController@login')->name('adminLoginSubmit');
-
     Route::get('/home', function() {
             return view('adminHome');
     })->name('adminHome');

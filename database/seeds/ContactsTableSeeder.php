@@ -13,7 +13,7 @@ class ContactsTableSeeder extends Seeder
     {
           $faker = \Faker\Factory::create();
   
-          // And now, let's create a few articles in our database:
+          // And now, let's create a few contacts in our database:
           for ($i = 0; $i < 50; $i++) {
               App\Contact::create([
                   'nom' => $faker->name,
