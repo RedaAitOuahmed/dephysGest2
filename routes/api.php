@@ -21,7 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('contacts')->group(function () {
     //Route::get('/add', 'Contact@add')->name('addContact');
     Route::get('/','Contact@displayAll')->name('displayAllContacts');
-    Route::post('/', 'Contact@addSubmit')->name('newContactSubmit');
+    Route::post('/', 'Contact@addSubmit')->name('addContact');
     
    
 });
