@@ -1,0 +1,419 @@
+swagger: "2.0"
+info:
+  description: "This is DephysGest a CRM API owned by DephysTech."
+  version: "1.0.0"
+  title: "Swagger Petstore"
+  contact:
+    email: "david@dephysgest.com"
+host: "dephysgest.dephystech.com"
+basePath: "/"
+tags:
+- name: "contacts"
+  description: "Everything about all types of contacts"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+- name: "taches"
+  description: "Everything about tasks"
+- name: "user"
+  description: "Operations about user"
+  externalDocs:
+    description: "Find out more about our store"
+    url: "http://swagger.io"
+schemes:
+- "http"
+paths:
+  /taches:
+      post:
+        tags:
+        - "taches"
+        summary: "Add a new tache"
+        description: ""
+        operationId: "addTache"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "body"
+          name: "tache"
+          description: "Tache object that needs to be added to the database"
+          required: true
+          schema:
+            $ref: "#/definitions/Tache"
+        responses:
+          405:
+            description: "Invalid input"
+          200:
+            description: "Tache added successfully"
+      get:
+        tags:
+        - "taches"
+        summary: "get All Taches"
+        description: ""
+        operationId: "getAllTaches"
+        produces:
+        - "application/json"
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/Tache"
+          404:
+            description: "No Tache found"
+  /taches/{tacheId}:
+      post:
+        tags:
+        - "taches"
+        summary: "Update an existing tache"
+        description: ""
+        operationId: "updateTache"
+        consumes:
+        - "application/json"
+        - "application/x-www-form-urlencoded"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "body"
+          name: "tache"
+          description: " New Tache data to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/Tache"
+        - in: "path"
+          name: "tacheId"
+          type: "integer"
+          required: true
+        responses:
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "Contact not found"
+          405:
+            description: "Validation exception"
+      get:
+        tags:
+        - "taches"
+        summary: "get an existing tache by id"
+        description: ""
+        operationId: "getTache"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "tacheId"
+          type: "integer"
+          required: true
+          
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema :
+              $ref : "#/definitions/Tache"
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "Tache not found"
+          405:
+            description: "Validation exception"
+      delete:
+        tags:
+        - "taches"
+        summary: "Deletes a tache"
+        description: ""
+        operationId: "deleteTache"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "tacheId"
+          type: "integer"
+          required: true
+        responses:
+          200:
+            description: "Tache Deleted"
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "Tache not found"
+    
+  /contacts:
+      post:
+        tags:
+        - "contacts"
+        summary: "Add a new contact"
+        description: ""
+        operationId: "addContact"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "body"
+          name: "contact"
+          description: "Contact object that needs to be added to the database"
+          required: true
+          schema:
+            $ref: "#/definitions/Contact"
+        responses:
+          405:
+            description: "Invalid input"
+          200:
+            description: "Contact added successfully"
+      get:
+        tags:
+        - "contacts"
+        summary: "get All contacts"
+        description: ""
+        operationId: "getAllContacts"
+        produces:
+        - "application/json"
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/Contact"
+          404:
+            description: "No Contact found"
+
+  /contacts/filterByTypeAndRelation:
+    get:
+      tags:
+      - "contacts"
+      summary: "filter contacts by type and/or by relation"
+      description: "Multiple type and relation values can be provided with comma separated strings, a logical AND operation will be performed to return the results"
+      operationId: "filterContactsByType"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "relations"
+        in: "query"
+        required: true
+        type: "array"
+        items:
+          type: "string"
+          enum:
+            - "client"
+            - "fournisseur"
+            - "prospect"
+            - "collegue"
+      - name: "types"
+        in: "query"
+        required: true
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - 'Undefined'
+          - 'Entreprise'
+          - 'Personne'
+          - 'User'
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Contact"
+        400:
+          description: "Invalid types and relations values"
+  /contacts/workingAt/{companyContactId}:
+    get:
+      tags:
+      - "contacts"
+      summary: "get the contacts of the people working at a company"
+      description: ""
+      operationId: "contactsWorkingAt"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "companyContactId"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Contact"
+        400:
+          description: "Invalid company contact id values"
+        404:
+          description: "Company not found"
+  /contacts/{contactId}:
+      post:
+        tags:
+        - "contacts"
+        summary: "Update an existing contact"
+        description: ""
+        operationId: "updateContact"
+        consumes:
+        - "application/json"
+        - "application/x-www-form-urlencoded"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "body"
+          name: "contact"
+          description: " New Contact object data to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/Contact"
+        - in: "path"
+          name: "contactId"
+          type: "integer"
+          required: true
+        responses:
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "Contact not found"
+          405:
+            description: "Validation exception"
+      get:
+        tags:
+        - "contacts"
+        summary: "Update an existing contact"
+        description: ""
+        operationId: "getContact"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "contactId"
+          type: "integer"
+          required: true
+          
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema :
+              $ref : "#/definitions/Contact"
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "Contact not found"
+          405:
+            description: "Validation exception"
+      delete:
+        tags:
+        - "contacts"
+        summary: "Deletes a contact"
+        description: ""
+        operationId: "deleteContact"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "contactId"
+          type: "integer"
+          required: true
+        responses:
+          200:
+            description: "Contact Deleted"
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "Contact not found"
+          
+    
+definitions:
+        
+  Relations:
+        type: "array"
+        items:
+          type: "string"
+          enum:
+            - "client"
+            - "fournisseur"
+            - "prospect"
+            - "collegue"
+  Type:
+        type: "string"
+        enum:
+        - 'Undefined'
+        - 'Entreprise'
+        - 'Personne'
+        - 'User'
+  Contact:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      type:
+        $ref : '#/definitions/Type'
+      nom:
+        type: "string"
+      relation:
+        $ref: '#/definitions/Relations'
+      email:
+        type: "string"
+      tel:
+        type: "string"
+      adresse:
+        type: "string"
+      fax:
+        type : "string"
+      addedBy:
+        type: "string"
+        description: "link to the user who added this contact"
+      EntrepriseData:
+        $ref: '#/definitions/Entreprise'
+      PersonneData:
+        $ref: '#/definitions/Personne' 
+      
+  Personne:
+    type: "object"
+    properties:
+      prenom:
+        type : 'string'
+  Entreprise:
+    type: "object"
+    properties:
+      siren:
+        type: 'string'
+      siret:
+        type : 'string'
+      assujettiTVA:
+        type : boolean
+      numTVA :
+        type : boolean
+  Projet:
+    type: "object"
+    description: "used to classify tasks"
+    properties:
+      nom:
+        type: 'string'
+      description:
+        type : 'string'
+      addedBy:
+        type: "string"
+        description: "link to the user who added this project"
+  Tache:
+    type: "object"
+    properties:
+      id:
+        type: 'integer'
+      nom:
+        type : 'string'
+      description:
+        type : 'string'
+      visibleAuxAutres:
+        type : 'boolean'
+      dateLimite:
+        type: 'string'
+      etat:
+        type: 'string'
+      projetId:
+        type: "integer"
+      addedBy:
+        type: "string"
+        description: "link to the user who added this project"
+        
+          
