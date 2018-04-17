@@ -15,6 +15,7 @@ class CreateFichiersTable extends Migration
     {
         Schema::create('fichiers', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('nom');
             $table->string('chemin');
             $table->integer('addedBy');
             $table->integer('tache_id');

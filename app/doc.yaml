@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   description: "This is DephysGest a CRM API owned by DephysTech."
   version: "1.0.0"
-  title: "Swagger Petstore"
+  title: "DephysGest"
   contact:
     email: "david@dephysgest.com"
 host: "dephysgest.dephystech.com"
@@ -15,14 +15,225 @@ tags:
     url: "http://swagger.io"
 - name: "taches"
   description: "Everything about tasks"
-- name: "user"
-  description: "Operations about user"
-  externalDocs:
-    description: "Find out more about our store"
-    url: "http://swagger.io"
+- name: "projets"
+  description: "Used to classify tasks (Les Taches)"
+- name: "fichiers"
+  description: "are uploaded to tasks (Les Taches)"
 schemes:
 - "http"
 paths:
+  /projets:
+      post:
+        tags:
+        - "projets"
+        summary: "Add a new projet"
+        description: ""
+        operationId: "addprojet"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "body"
+          name: "projet"
+          description: "projet object that needs to be added to the database"
+          required: true
+          schema:
+            $ref: "#/definitions/Projet"
+        responses:
+          405:
+            description: "Invalid input"
+          200:
+            description: "projet added successfully"
+      get:
+        tags:
+        - "projets"
+        summary: "get All projets"
+        description: ""
+        operationId: "getAllprojets"
+        produces:
+        - "application/json"
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/Projet"
+          404:
+            description: "No projet found"
+  /projets/{projetId}:
+      post:
+        tags:
+        - "projets"
+        summary: "Update an existing projet"
+        description: ""
+        operationId: "updateprojet"
+        consumes:
+        - "application/json"
+        - "application/x-www-form-urlencoded"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "body"
+          name: "projet"
+          description: " New projet data to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/Projet"
+        - in: "path"
+          name: "projetId"
+          type: "integer"
+          required: true
+        responses:
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "Contact not found"
+          405:
+            description: "Validation exception"
+      get:
+        tags:
+        - "projets"
+        summary: "get an existing projet by id"
+        description: ""
+        operationId: "getprojet"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "projetId"
+          type: "integer"
+          required: true
+          
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema :
+              $ref : "#/definitions/Projet"
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "projet not found"
+          405:
+            description: "Validation exception"
+      delete:
+        tags:
+        - "projets"
+        summary: "Deletes a projet"
+        description: ""
+        operationId: "deleteprojet"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "projetId"
+          type: "integer"
+          required: true
+        responses:
+          200:
+            description: "projet Deleted"
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "projet not found"
+  /fichiers:
+      get:
+        tags:
+        - "fichiers"
+        summary: "get All fichiers"
+        description: ""
+        operationId: "getAllfichiers"
+        produces:
+        - "application/json"
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/Fichier"
+          404:
+            description: "No fichier found"
+  /fichiers/{fichierId}:
+      post:
+        tags:
+        - "fichiers"
+        summary: "Update an existing fichier"
+        description: ""
+        operationId: "updatefichier"
+        consumes:
+        - "application/json"
+        - "application/x-www-form-urlencoded"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "formData"
+          name: "fichierObject"
+          description: " New fichier data to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/Fichier"
+        - in: "path"
+          name: "fichierId"
+          type: "integer"
+          required: true
+        - in: "formData"
+          name: "fichier"
+          type: "file"
+          required: false
+        responses:
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "Fichier not found"
+          405:
+            description: "Validation exception"
+      get:
+        tags:
+        - "fichiers"
+        summary: "get an existing fichier by id"
+        description: ""
+        operationId: "getfichier"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "fichierId"
+          type: "integer"
+          required: true
+          
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema :
+              $ref : "#/definitions/Fichier"
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "fichier not found"
+          405:
+            description: "Validation exception"
+      delete:
+        tags:
+        - "fichiers"
+        summary: "Deletes a fichier"
+        description: ""
+        operationId: "deletefichier"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "fichierId"
+          type: "integer"
+          required: true
+        responses:
+          200:
+            description: "fichier Deleted"
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "fichier not found"
   /taches:
       post:
         tags:
@@ -49,7 +260,7 @@ paths:
       get:
         tags:
         - "taches"
-        summary: "get All Taches"
+        summary: "get All Taches that are visible to the user making this request"
         description: ""
         operationId: "getAllTaches"
         produces:
@@ -138,7 +349,143 @@ paths:
             description: "Invalid ID supplied"
           404:
             description: "Tache not found"
-    
+  /taches_projet/{projetId}:
+    get:
+      tags:
+      - "taches"
+      summary: "get all 'taches' of a 'projet'"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+      - in: "path"
+        name: "projetId"
+        type: "integer"
+        required: true
+      responses:
+        200:
+          description : "Succeded Operation, returning all 'tache' of the 'projet' "
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Tache"
+        404:
+          description: "No Tache found for this projet"
+    delete:
+      tags:
+      - "taches"
+      summary: "delete all 'taches' of a 'projet'"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+      - in: "path"
+        name: "projetId"
+        type: "integer"
+        required: true
+      responses:
+        200:
+          description : "Succeded Operation, deleting all 'tache' of the 'projet' "
+        404:
+          description: "No Tache found for this projet"
+  /taches/filterByProjetAndVisibilityAndAssignation:
+    get:
+      tags:
+      - "taches"
+      summary: "filter taches by projet, visibility, and assignation"
+      description: "Projet : Multiple projet values can be provided with comma separated strings, a logical OR operation will be performed to return the results. Visibility : public or perso. Assignation : taches that the user assigned or taches assigned to the user, or all taches."
+      operationId: "filterTachesByProjet_Visibility_Assignation"
+      consumes:
+      - 'application/json'
+      produces:
+      - "application/json"
+      parameters:
+      - name: "visibility"
+        in: "query"
+        type: "string"
+        enum:
+        - "perso"
+        - "public"
+      - name: "assignation"
+        in: "query"
+        type: "string"
+        enum:
+        - "all"
+        - "userAssigned"
+        - "assignedToUser"
+      - name: "projetIds"
+        in: "query"
+        required: true
+        type: "array"
+        items:
+          type: "integer"
+
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Contact"
+        400:
+          description: "Invalid types and relations values"    
+  
+  /fichiers/tache:
+      post:
+        tags:
+        - "fichiers"
+        summary: "upload a new fichier to a tache"
+        description: ""
+        operationId: "addFichier"
+        consumes:
+        - "multipart/form-data"
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+        - name: "fichierObject"
+          in: "formData"
+          description: "fichier object that needs to be added to the database"
+          required: true
+          schema:
+            $ref: "#/definitions/Fichier"
+        - name: "file"
+          in: "formData"
+          description: "file to upload"
+          required: true
+          type: "file"
+        responses:
+          405:
+            description: "Invalid input"
+          200:
+            description: "Fichier uploaded successfully"
+  /fichiers/tache/{tacheId}:
+      get:
+        tags:
+        - "fichiers"
+        summary: "get All Fichiers related to this tache"
+        description: ""
+        operationId: "getAllFichiers"
+        produces:
+        - "application/json"
+        parameters:
+        - in : "path"
+          name : "tacheId"
+          required: true
+          type : "integer"
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/Fichier"
+          404:
+            description: "No Tache found"
+
+
   /contacts:
       post:
         tags:
@@ -185,7 +532,7 @@ paths:
       tags:
       - "contacts"
       summary: "filter contacts by type and/or by relation"
-      description: "Multiple type and relation values can be provided with comma separated strings, a logical AND operation will be performed to return the results"
+      description: "Multiple type and relation values can be provided with comma separated strings, a logical OR operation will be performed to return the results"
       operationId: "filterContactsByType"
       produces:
       - "application/json"
@@ -388,6 +735,8 @@ definitions:
     type: "object"
     description: "used to classify tasks"
     properties:
+      id:
+        type: "integer"
       nom:
         type: 'string'
       description:
@@ -413,7 +762,21 @@ definitions:
       projetId:
         type: "integer"
       addedBy:
-        type: "string"
-        description: "link to the user who added this project"
+        type: "integer"
+        description: "id of the user who added this project"
+  Fichier:
+    type: "object"
+    properties:
+      id:
+        type: 'integer'
+      nom:
+        type : 'string'
+      chemin:
+        type : 'string'
+      addedBy:
+        type: "integer"
+        description: "id of the user who added this file"
+      tache_id:
+        type: 'integer'
         
           
