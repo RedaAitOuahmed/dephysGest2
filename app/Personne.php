@@ -131,11 +131,13 @@ class Personne extends Model
         return $this->morphMany('App\Contact', 'contactable');
     }
 
-    
+    /**
+     * defines the many to many relationship between personnes and entreprises()
+    */
 
     public function entreprises()
     {
-        return $this->belongsToMany('App\Personne');
+        return $this->belongsToMany('App\Entreprise');
     }
 
 

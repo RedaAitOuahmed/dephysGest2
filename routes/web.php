@@ -155,9 +155,9 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::prefix('contact')->group(function () {
-    Route::get('/add', 'Contact@add')->name('addContact');
-    Route::post('/addSubmit', 'Contact@addSubmit')->name('addContactSubmit');
-    Route::get('/displayAll','Contact@displayAll')->name('displayAllContacts');
+    // Route::get('/add', 'ContactController@add')->name('addContact');
+    // Route::post('/addSubmit', 'ContactController@saveContact')->name('addContactSubmit');
+    // Route::get('/','Contact@displayAll')->name('displayAllContacts');
    
 });
 
