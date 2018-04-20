@@ -24,6 +24,7 @@ class ContactController extends Controller
         $this->validate($request,[
             'nom'=>'required',
             'type'=>'in:Personne,Entreprise',
+            'relations.*'=>'in:client,fournisseur,collegue,prospect'
         ]);
 
        
@@ -45,7 +46,14 @@ class ContactController extends Controller
 
         if($contact->save())
         {
-            return response()->json(["message"=>"Contact Added"],201);   
+            //setting the contact to be a contact instance
+            $contact = $contact->contacts()->first();
+            if($request->relations)
+            {
+                $contact->setRelations($request->relations);
+            }
+            
+            return response()->json(["message"=>"Contact Added", "id"=> $contact->id],201);   
         }
         
         return response()->json(["message"=>"Server internal Error"],500);        
@@ -55,6 +63,7 @@ class ContactController extends Controller
     public function updateContact(Request $request, $id)
     {
         $contact =  Contact::find($id);
+
         if( ! $contact)
         {
             return response()->json(["message"=>"No contact with id = $id found"],404);
@@ -63,13 +72,16 @@ class ContactController extends Controller
         $this->validate($request,[
             'nom'=>'required',
             'type'=>'in:Personne,Entreprise',
+            'relations.*'=>'in:client,fournisseur,collegue,prospect'
         ]);
 
         if($request->type == 'Entreprise' && $contact->getType() == 'User')
         {
             return response()->json(["message"=>"Invalid Operation : can't cast User type to Entrerpise type"],400);
         }
-        
+        //first we update the relations
+        $contact->setRelations($request->relations);
+                
         // case when we're not changing the type of the contact :
         if($request->type == null || $request->type == $contact->getType() || ($request->type == 'Personne' && $contact->getType() == 'User') )
         { 
@@ -131,8 +143,7 @@ class ContactController extends Controller
             }
         
 
-        }         
-      
+        }
              
     }
 

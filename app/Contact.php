@@ -100,6 +100,29 @@ class Contact extends Model
     {
         return $this->relations()->distinct()->pluck('relation')->toArray();
     }
+    public function setRelations(array $relations)
+    {
+       $oldRelations = $this->getRelations();
+
+       //first we get rid of relations tha don't exist anymore
+       foreach($oldRelations as $oldRelation)
+       {
+           if( ! \in_array($oldRelation, $relations))
+           {
+               $this->relations()->where('relation',$oldRelation)->delete();
+           }
+       }
+       // now we add the new relations
+       foreach($relations as $newRelation)
+       {
+            if( ! \in_array($newRelation, $oldRelations))
+            {
+                $rel = new \App\Relation();
+                $rel->relation = $newRelation;
+                $this->relations()->save($rel);
+            }
+       }
+    }
   
 
 
