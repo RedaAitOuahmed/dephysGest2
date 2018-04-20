@@ -20,7 +20,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::prefix('contacts')->group(function () {
     //Route::get('/add', 'Contact@add')->name('addContact');
-    
+    Route::get('/filterByTypeAndRelation', 'ContactController@getContactsFiltred' );
+    //->name('getContactsFiltredByTypeAndRelation');
+
     Route::post('/', 'ContactController@saveContact')->name('saveContact');
     Route::get('/{id}','ContactController@getContact')->name('getContact');
     Route::get('/','ContactController@getAllContacts')->name('getAllContacts');
@@ -28,6 +30,8 @@ Route::prefix('contacts')->group(function () {
     Route::delete('/{id}','ContactController@deleteContact')->name('deleteContact');
     Route::get('/workingAt/{companyContactId}','ContactController@getContactsWorkingAt')
             ->name('getContactsWorkingAt');
+    
+   
     
    
 });

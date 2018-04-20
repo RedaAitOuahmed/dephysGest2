@@ -116,6 +116,12 @@ class Entreprise extends Model
         return $this->contact->produits();
     }
 
+    public function relations()
+    {
+        $this->bootContact();  
+        return $this->contact->relations();
+    }
+
     public function addedBy()
     {
         $this->bootContact();  

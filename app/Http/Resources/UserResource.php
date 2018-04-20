@@ -14,15 +14,16 @@ class UserResource extends Resource
      */
     public function toArray($request)
     {
-        return [
-            'type'=> 'User',
-            'nom' => $this->nom,
-            'relation' => $this->when($this->relation != null, $this->relation),
-            'prenom' => $this->when($this->prenom != null, $this->prenom),
-            'email'=> $this->when($this->email != null, $this->email),
-            'tel'=> $this->when($this->tel != null, $this->tel),  
-            'adresse'=> $this->when($this->adresse != null, $this->adresse),  
-            'fax'=> $this->when($this->fax != null, $this->fax),    
-        ];
+        return new PersonneResource($this->personne);
+        // return [
+        //     'type'=> 'User',
+        //     'nom' => $this->nom,
+        //     'relation' => $this->when($this->relation != null, $this->relation),
+        //     'prenom' => $this->when($this->prenom != null, $this->prenom),
+        //     'email'=> $this->when($this->email != null, $this->email),
+        //     'tel'=> $this->when($this->tel != null, $this->tel),  
+        //     'adresse'=> $this->when($this->adresse != null, $this->adresse),  
+        //     'fax'=> $this->when($this->fax != null, $this->fax),    
+        // ];
     }
 }

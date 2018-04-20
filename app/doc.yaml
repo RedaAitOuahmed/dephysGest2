@@ -5,7 +5,7 @@ info:
   title: "DephysGest"
   contact:
     email: "david@dephysgest.com"
-host: "dephysgest.dephystech.com"
+host: "http://127.0.0.1:8000/api"
 basePath: "/"
 tags:
 - name: "contacts"
@@ -502,8 +502,8 @@ paths:
           schema:
             $ref: "#/definitions/Contact"
         responses:
-          405:
-            description: "No user logged in"
+          500:
+            description: "Server internal error"
           200:
             description: "Contact added successfully"
       get:
@@ -528,9 +528,9 @@ paths:
     get:
       tags:
       - "contacts"
-      summary: "filter contacts by type and/or by relation"
-      description: "Multiple type and relation values can be provided with comma separated strings, a logical OR operation will be performed to return the results"
-      operationId: "filterContactsByType"
+      summary: "filter contacts by type and by relation"
+      description: "Multiple type and relation values can be provided with comma separated strings, a logical OR operation will be performed between the various values of each filter, and then the intersection of the two results is returned"
+      operationId: "filterContactsByTypeAndRelation"
       produces:
       - "application/json"
       parameters:
@@ -564,7 +564,7 @@ paths:
             items:
               $ref: "#/definitions/Contact"
         400:
-          description: "Invalid types and relations values"
+          description: "Invalid type/relation value : 'The_value' "
   /contacts/workingAt/{companyContactId}:
     get:
       tags:
@@ -704,8 +704,8 @@ definitions:
       fax:
         type : "string"
       addedBy:
-        type: "string"
-        description: "link to the user who added this contact"
+        type: "integer"
+        description: "id of the user who added this contact"
       EntrepriseData:
         $ref: '#/definitions/Entreprise'
       PersonneData:

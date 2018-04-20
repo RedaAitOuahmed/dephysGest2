@@ -19,33 +19,43 @@ class ContactResource extends Resource
       */
     public function toArray($request)
     {
+        $baseArray = [
+            'id' => $this->id,
+            'type' => $this->getType(),
+            'nom' => $this->nom,
+            'relation' => $this->getRelations(),
+            'email'=> $this->when($this->email != null, $this->email),
+            'tel'=> $this->when($this->tel != null, $this->tel),  
+            'adresse'=> $this->when($this->adresse != null, $this->adresse),  
+            'fax'=> $this->when($this->fax != null, $this->fax),  
+            'addedBy'=> $this->addedBy,
+        ];
                
         if( $this->contactable_type == null)
         {
-            return [
-                'type' => 'Undefined',
-                'nom' => $this->nom,
-                'relation' => $this->when($this->relation != null, $this->relation),
-                'email'=> $this->when($this->email != null, $this->email),
-                'tel'=> $this->when($this->tel != null, $this->tel),  
-                'adresse'=> $this->when($this->adresse != null, $this->adresse),  
-                'fax'=> $this->when($this->fax != null, $this->fax),  
-                'addedBy'=> $this->when($this->addedBy()->first() != null, new UserResource($this->addedBy()->first())),
-                // 'contactable_type'=> $this->when($this->contactable_type != null, $this->contactable_type),  
-                // 'contactable'=> $this->when($this->contactable()->first() != null, new Personne($this->contactable()->first())),  
-            ];
-
+            return $baseArray;
         }
         if($this->contactable_type == 'App\Personne')
         {
-            return new PersonneResource($this->contactable);
+            $perData = 
+            [   'PersonneData'=> ['prenom' => $this->contactable->prenom],
+                ];
+            return array_merge($baseArray,$perData);
         }
         if($this->contactable_type == 'App\Entreprise')
         {
-            return new EntrepriseResource($this->contactable);
+            $entr = $this->contactable;
+            $entrData = [
+                'siren' => $entr->siren,
+                'siret' => $entr->siret,
+                'assujettiTVA' => $entr->assujettiTVA,
+                'numTVA' => $entr->numTVA,
+
+            ];
+            return array_merge($baseArray,$entrData);
         }else
         {
-            return 'ERROR : contactable_type unknown';
+            return ['message' => 'ERROR : contactable_type unknown'];
         }
     }
 }

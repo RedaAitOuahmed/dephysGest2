@@ -29,6 +29,11 @@ class Contact extends Model
     {
         return $this->belongsTo('App\User','addedBy');
     }
+
+    public function relations()
+    {
+        return $this->hasMany('App\Relation');
+    }
     
 
     public function getAllColumns()
@@ -72,6 +77,30 @@ class Contact extends Model
         return true;
 
     }
+    /**
+     * return the type  of this contact that refer to a user
+     */
+    public function getType()
+    {
+        if($this->contactable==null)
+        {
+           return 'Undefined';
+        }
+        if($this->contactable_type == 'App\Entreprise')
+        {
+            return 'Entreprise';
+        }
+        if($this->isUser())
+        {
+            return 'User';
+        }
+        return 'Personne';
+    }
+    public function getRelations()
+    {
+        return $this->relations()->distinct()->pluck('relation')->toArray();
+    }
+  
 
 
     
