@@ -137,6 +137,24 @@ class User extends Authenticatable
         return $this->hasOne('App\Personne','user_id','id');
     }
     /**
+     * function to return the Contact id of this user : aka the id of the row that represents this user on the contact table
+     */
+    public function getContactId()
+    {
+        $per = $this->personne()->first();
+        if($per)
+        {
+
+            $cont = $per->contacts()->first();
+            if($cont)
+            {
+                return $cont->id;
+            }
+        }
+        return null;
+    }
+
+    /**
      * contacts a user added and so on
      */
     public function contacts_added()

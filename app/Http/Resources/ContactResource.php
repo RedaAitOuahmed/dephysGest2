@@ -19,6 +19,12 @@ class ContactResource extends Resource
       */
     public function toArray($request)
     {
+        $addedBy_contactId = null;
+        $usr = \App\User::find($this->addedBy);
+        if($usr)
+        {
+            $addedBy_contactId = $usr->getContactId();
+        }
         $baseArray = [
             'id' => $this->id,
             'type' => $this->getType(),
@@ -28,7 +34,7 @@ class ContactResource extends Resource
             'tel'=> $this->when($this->tel != null, $this->tel),  
             'adresse'=> $this->when($this->adresse != null, $this->adresse),  
             'fax'=> $this->when($this->fax != null, $this->fax),  
-            'addedBy'=> $this->addedBy,
+            'addedBy'=> $addedBy_contactId,
         ];
                
         if( $this->contactable_type == null)
@@ -38,7 +44,7 @@ class ContactResource extends Resource
         if($this->contactable_type == 'App\Personne')
         {
             $perData = 
-            [   'PersonneData'=> ['prenom' => $this->contactable->prenom],
+            [   'prenom' => $this->contactable->prenom,
                 ];
             return array_merge($baseArray,$perData);
         }
