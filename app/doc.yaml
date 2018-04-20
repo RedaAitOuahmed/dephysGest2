@@ -614,11 +614,13 @@ paths:
           required: true
         responses:
           400:
-            description: "Invalid ID supplied"
+            description: "Invalid Operation : can't cast User type to Entrerpise type"
           404:
             description: "Contact not found"
-          405:
-            description: "Validation exception"
+          500:
+            description: "Server Internal Error"
+          407:
+            description: "Warning old contactable instance couldn't be delted"
       get:
         tags:
         - "contacts"
@@ -689,6 +691,7 @@ definitions:
     properties:
       id:
         type: "integer"
+        description: "wouldn't be taken in consideration in a post or put request"
       type:
         $ref : '#/definitions/Type'
       nom:
@@ -705,28 +708,21 @@ definitions:
         type : "string"
       addedBy:
         type: "integer"
-        description: "id of the user who added this contact"
-      EntrepriseData:
-        $ref: '#/definitions/Entreprise'
-      PersonneData:
-        $ref: '#/definitions/Personne' 
-      
-  Personne:
-    type: "object"
-    properties:
-      prenom:
-        type : 'string'
-  Entreprise:
-    type: "object"
-    properties:
+        description: "ContactId of the user who added this contact"
       siren:
         type: 'string'
+        description: "in case it's an Entreprise"
       siret:
         type : 'string'
+        description: "in case it's an Entreprise"
       assujettiTVA:
         type : boolean
+        description: "in case it's an Entreprise"
       numTVA :
         type : boolean
+        description: "in case it's an Entreprise"
+      prenom:
+        string : "in case it's a Personne " 
   Projet:
     type: "object"
     description: "used to classify tasks"

@@ -180,15 +180,17 @@ class Personne extends Model
 
     public function delete()
     {
+        $res = false;
         if(! $this->isUser())
         {
             $this->bootContact(); 
-            parent::delete();
+            $res = parent::delete();
             if($this->contact != null)
             {
-                $this->contact->delete();
+                $res = $res && $this->contact->delete();
             }                   
         }
+        return $res;
     }
 
 
