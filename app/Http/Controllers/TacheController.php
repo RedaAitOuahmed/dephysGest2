@@ -127,7 +127,12 @@ class TacheController extends Controller
         {
             return response()->json(["message"=>"No Projet with id = $projetId found"],404);
         }
-        return TacheResource::collection($projet->taches);
+        $query = Projet::where('id',$projetId)->first()->taches()->where(function ($query) 
+        {
+            $query->where('visibleAuxAutres',true)->orWhere('addedBy',Auth::user()->id);
+        });
+        
+        return TacheResource::collection($query->get());
     }
     // public function deleteAllTachesOfAProjet($projetId)
     // {
