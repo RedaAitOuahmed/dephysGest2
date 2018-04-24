@@ -134,14 +134,26 @@ class TacheController extends Controller
         
         return TacheResource::collection($query->get());
     }
-    // public function deleteAllTachesOfAProjet($projetId)
-    // {
-    //     $projet = Projet::find($projetId);
-    //     if( ! $projet)
-    //     {
-    //         return response()->json(["message"=>"No Projet with id = $projetId found"],404);
-    //     }
-    //     return TacheResource::collection($projet->taches);
-    // }
+    public function deleteTachesOfAProjet($projetId)
+    {
+        $projet = Projet::find($projetId);
+        if( ! $projet)
+        {
+            return response()->json(["message"=>"No Projet with id = $projetId found"],404);
+        }
+        if( ! Auth::user()->superUser)
+        {
+            return response()->json(["message"=>"Invalid Operation : this user is not a super user, only a super user can perform this action"],405);
+        }
+        if($projet->taches()->count() == 0)
+        {
+            return response()->json(["message"=>"No taches to delete"],501);
+        }
+        if($projet->taches()->delete())
+        {
+            return response()->json(["message"=>"Succeded Operation, all 'taches' of the 'projet' were deleted"],200);
+        }
+        return response()->json(["message"=>"Internal Server Error"],500);
+    }
 
 }

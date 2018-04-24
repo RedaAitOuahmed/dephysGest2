@@ -32,6 +32,7 @@ Route::prefix('contacts')->group(function () {
 
 Route::prefix('taches')->group(function () {
     Route::get('projet/{projetId}','TacheController@getTachesOfAProjet')->name('getTachesOfAProjet');
+    Route::delete('projet/{projetId}','TacheController@deleteTachesOfAProjet')->name('deleteTachesOfAProjet');
     Route::post('/', 'TacheController@saveTache')->name('saveTache');
     Route::get('/', 'TacheController@getAllTaches')->name('getAllTaches');
     Route::put('/{tacheId}','TacheController@updateTache')->name('updateTache');

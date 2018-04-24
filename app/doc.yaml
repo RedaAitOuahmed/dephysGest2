@@ -301,7 +301,7 @@ paths:
           404:
             description: "Tache not found"
           405:
-            description: "can't be edited by this user"
+            description: "Invalid Operation : this Tache can't be edited by this user, as it's not assigned to him nor he was he the one who created it neither is he a super user"
       get:
         tags:
         - "taches"
@@ -342,7 +342,7 @@ paths:
           200:
             description: "Tache Deleted"
           405:
-            description: "this tache was created by another user"
+            description: "Invalid Operation : only a super user or the user who created this tache can delete it"
           404:
             description: "Tache not found"
   /taches/projet/{projetId}:
@@ -371,7 +371,7 @@ paths:
     delete:
       tags:
       - "taches"
-      summary: "delete all 'taches' of a 'projet'"
+      summary: "superUser deletes all 'taches' of a 'projet'"
       consumes:
         - "application/json"
       produces:
@@ -383,9 +383,15 @@ paths:
         required: true
       responses:
         200:
-          description : "Succeded Operation, deleting all 'tache' of the 'projet' "
+          description : "Succeded Operation, all 'tache' of the 'projet' were deleted"
         404:
-          description: "No Tache found for this projet"
+          description: "No projet with id = $id found"
+        405:
+          description: "Invalid Operation : this user is not a super user, only a super user can perform this action"
+        500:
+          description: "Internal Server Error"
+        501:
+          description: "No taches to delete"
   /taches/filterByProjetAndVisibilityAndAssignation:
     get:
       tags:
