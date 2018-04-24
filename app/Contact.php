@@ -12,7 +12,7 @@ class Contact extends Model
      * a contact can be : just a contact, a Personne, an Entreprise or a user
      */
 
-    protected $fillable = ['nom','relation','tel','email','adresse','fax','addedBy'];
+    protected $fillable = ['nom','relation','tel','email','adresse','fax'];
    
 
     public function contactable()

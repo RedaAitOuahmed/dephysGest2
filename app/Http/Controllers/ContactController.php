@@ -31,16 +31,19 @@ class ContactController extends Controller
         if($request->type == null)
         {
             
-            $contact =  new \App\Contact($request->all() + ['addedBy' => Auth::user()->id]);
+            $contact =  new \App\Contact($request->all() );
+            $contact->addedBy = Auth::user()->id;
             
         }else
         {
             if($request->type == "Personne")
             {
-                $contact =  new \App\Personne($request->all() + ['addedBy' => Auth::user()->id]);
+                $contact =  new \App\Personne($request->all() );
+                $contact->addedBy = Auth::user()->id;
             }else if ($request->type == "Entreprise")
             {
-                $contact =  new \App\Entreprise($request->all() + ['addedBy' => Auth::user()->id]);
+                $contact =  new \App\Entreprise($request->all() );
+                $contact->addedBy = Auth::user()->id;
             }
         }
 
@@ -67,6 +70,10 @@ class ContactController extends Controller
         if( ! $contact)
         {
             return response()->json(["message"=>"No contact with id = $id found"],404);
+        }
+        if( !Auth::user()->superUser && $contact->addedBy != Auth::user()->id)
+        {
+            return response()->json(["message"=>"Invalid Operation : can be edited only by a super user or by the user who added this contact"],410);
         }
 
         $this->validate($request,[
@@ -164,6 +171,10 @@ class ContactController extends Controller
     public function deleteContact($id)
     {
         $contact = Contact::find($id);
+        if( !Auth::user()->superUser && $contact->addedBy != Auth::user()->id)
+        {
+            return response()->json(["message"=>"Invalid Operation : can be deleted only by a super user or by the user who added this contact"],410);
+        }
         
         if($contact)
         {

@@ -620,6 +620,8 @@ paths:
             description: "Server Internal Error"
           407:
             description: "Warning old contactable instance couldn't be delted"
+          410:
+            description: "Invalid Operation : Contact can be edited only by a super user or by the user who added this contact"
       get:
         tags:
         - "contacts"
@@ -661,10 +663,10 @@ paths:
         responses:
           200:
             description: "Contact Deleted"
-          400:
-            description: "Invalid ID supplied"
           404:
             description: "Contact not found"
+          410:
+            description: "Invalid Operation : can be deleted only by a super user or by the user who added this contact"
           
     
 definitions:
