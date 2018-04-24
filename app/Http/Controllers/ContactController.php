@@ -153,7 +153,13 @@ class ContactController extends Controller
     }
     public function getContact($id)
     {
-        return new ContactResource(Contact::find($id));
+        $contact =  Contact::find($id);
+
+        if( ! $contact)
+        {
+            return response()->json(["message"=>"No contact with id = $id found"],404);
+        }
+        return new ContactResource($contact);
     }
     public function deleteContact($id)
     {
@@ -174,8 +180,14 @@ class ContactController extends Controller
 
     public function getContactsWorkingAt($companyContactId)
     {
+        $contact =  Contact::find($companyContactId);
+
+        if( ! $contact)
+        {
+            return response()->json(["message"=>"No contact with id = $id found"],404);
+        }
         // retrieves an object of type Entreprise
-        $company = Contact::find($companyContactId)->contactable;
+        $company = $contact->contactable;
         if($company)
         {
             return   ContactResource::collection($company->employees()->get());
@@ -189,7 +201,7 @@ class ContactController extends Controller
      * if an argument is not passed ( relation or type ), its filter will be ignored 
      * @var types : all types that shoud pass the filter
      * @var relations : all relations that should pass the filter
-     * @return contactRessource::collection a filtred list of contacts by relation and type
+     * @return ContactResource::collection a filtred list of contacts by relation and type
      */
 
     public function getContactsFiltred(Request $request)

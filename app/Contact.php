@@ -78,7 +78,7 @@ class Contact extends Model
 
     }
     /**
-     * return the type  of this contact that refer to a user
+     * @return string the type  of this contact
      */
     public function getType()
     {
@@ -96,6 +96,18 @@ class Contact extends Model
         }
         return 'Personne';
     }
+    /**
+     * @return integer user id if this contact refers to a user
+     */
+    public function getUserId()
+    {
+        if($this->isUser())
+        {
+            return $this->contactable->user_id;
+        }
+        return null;
+    }
+
     public function getRelations()
     {
         return $this->relations()->distinct()->pluck('relation')->toArray();

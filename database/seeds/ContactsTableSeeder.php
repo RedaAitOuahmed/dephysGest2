@@ -21,7 +21,7 @@ class ContactsTableSeeder extends Seeder
         $contact->email = $faker->safeEmail;
         $contact->tel = $faker->phoneNumber;
         $contact->adresse = $faker->address;
-        $contact->addedBy = 0;
+        $contact->addedBy = 1;
         $contact->save();
         $rel = new App\Relation();
         $rel->relation = $faker->randomElement($array = 
@@ -42,7 +42,7 @@ class ContactsTableSeeder extends Seeder
         $contact->email = $faker->safeEmail;
         $contact->tel = $faker->phoneNumber;
         $contact->adresse = $faker->address;
-        $contact->addedBy = 0;
+        $contact->addedBy = 1;
         $contact->save();
         $rel = new App\Relation();
         $rel->relation = $faker->randomElement($array = 
@@ -63,7 +63,7 @@ class ContactsTableSeeder extends Seeder
         $contact->email = $faker->safeEmail;
         $contact->tel = $faker->phoneNumber;
         $contact->adresse = $faker->address;
-        $contact->addedBy = 0;
+        $contact->addedBy = 1;
         $contact->save();
         $rel = new App\Relation();
         $rel->relation = $faker->randomElement($array = 

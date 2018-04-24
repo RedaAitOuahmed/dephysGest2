@@ -277,7 +277,8 @@ paths:
         tags:
         - "taches"
         summary: "Update an existing tache"
-        description: ""
+        description: "The Tache can be updated either by the user who created
+         it or by an assigned-to user"
         operationId: "updateTache"
         consumes:
         - "application/x-www-form-urlencoded"
@@ -298,9 +299,9 @@ paths:
           400:
             description: "Invalid ID supplied"
           404:
-            description: "Contact not found"
+            description: "Tache not found"
           405:
-            description: "Validation exception"
+            description: "can't be edited by this user"
       get:
         tags:
         - "taches"
@@ -320,12 +321,10 @@ paths:
             description : "Succeded Operation"
             schema :
               $ref : "#/definitions/Tache"
-          400:
-            description: "Invalid ID supplied"
           404:
             description: "Tache not found"
           405:
-            description: "Validation exception"
+            description: "This Tache can't be seen by this user"
       delete:
         tags:
         - "taches"
@@ -342,11 +341,11 @@ paths:
         responses:
           200:
             description: "Tache Deleted"
-          400:
-            description: "Invalid ID supplied"
+          405:
+            description: "this tache was created by another user"
           404:
             description: "Tache not found"
-  /taches_projet/{projetId}:
+  /taches/projet/{projetId}:
     get:
       tags:
       - "taches"
@@ -709,6 +708,12 @@ definitions:
       addedBy:
         type: "integer"
         description: "ContactId of the user who added this contact"
+      createdAt:
+        type: "date"
+        description: "this field is handled automaticly, so it wouldn't be taken in consideration in a post or put request"
+      updatedAt:
+        type: "date"
+        description: "this field is handled automaticly, so it wouldn't be taken in consideration in a post or put request"
       siren:
         type: 'string'
         description: "in case it's an Entreprise"
@@ -736,7 +741,7 @@ definitions:
         type : 'string'
       addedBy:
         type: "string"
-        description: "link to the user who added this project"
+        description: "Contact id of the user who added this project"
   Tache:
     type: "object"
     properties:
@@ -752,11 +757,21 @@ definitions:
         type: 'string'
       etat:
         type: 'string'
+        enum:
+          - 'aFaire'
+          - 'enCours'
+          - 'Faite'
       projetId:
         type: "integer"
       addedBy:
         type: "integer"
-        description: "id of the user who added this project"
+        description: "Contact id  of the user who added this project"
+      assignedTo:
+        description: "array containing contact ids of the users that this tache is assigned to"
+        type: "array"
+        items:
+          type: 'integer'
+        
   Fichier:
     type: "object"
     properties:
@@ -768,7 +783,7 @@ definitions:
         type : 'string'
       addedBy:
         type: "integer"
-        description: "id of the user who added this file"
+        description: "Contact id of the user who added this file"
       tache_id:
         type: 'integer'
         

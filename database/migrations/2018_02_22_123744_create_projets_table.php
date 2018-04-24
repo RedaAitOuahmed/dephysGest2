@@ -17,9 +17,18 @@ class CreateProjetsTable extends Migration
             $table->increments('id');
             $table->string('nom')->unique();
             $table->string('description')->nullable();
-            $table->integer('addedBy_id');
+            $table->integer('addedBy')->nullable();
             $table->timestamps();
         });
+        //creating a first default row
+
+        DB::table('projets')->insert(
+                array(
+                    'nom' => 'Libre',
+                    'description' => "Ce Projet contient toutes les tâches qui n'appartienent à aucun autre projet",
+                    'addedBy' => null,
+                )
+            );
     }
 
     /**

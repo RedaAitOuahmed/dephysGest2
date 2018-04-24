@@ -175,7 +175,7 @@ class User extends Authenticatable
      */
     public function taches_assigned()
     {
-        return $this->belongsToMany('App\Tache','taches_users','id','id');
+        return $this->belongsToMany('App\Tache','taches_users','user_id','tache_id');
     }
     public function fichiers_added()
     {

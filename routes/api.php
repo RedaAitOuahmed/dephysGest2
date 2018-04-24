@@ -19,20 +19,24 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::prefix('contacts')->group(function () {
-    //Route::get('/add', 'Contact@add')->name('addContact');
-    Route::get('/filterByTypeAndRelation', 'ContactController@getContactsFiltred' );
-    //->name('getContactsFiltredByTypeAndRelation');
-
+    Route::get('/filterByTypeAndRelation', 'ContactController@getContactsFiltred' )
+        ->name('getContactsFiltredByTypeAndRelation');
     Route::post('/', 'ContactController@saveContact')->name('saveContact');
     Route::get('/{id}','ContactController@getContact')->name('getContact');
     Route::get('/','ContactController@getAllContacts')->name('getAllContacts');
     Route::put('/{id}','ContactController@updateContact')->name('updateContact');
     Route::delete('/{id}','ContactController@deleteContact')->name('deleteContact');
     Route::get('/workingAt/{companyContactId}','ContactController@getContactsWorkingAt')
-            ->name('getContactsWorkingAt');
-    
-   
-    
+            ->name('getContactsWorkingAt'); 
+});
+
+Route::prefix('taches')->group(function () {
+    Route::get('projet/{projetId}','TacheController@getTachesOfAProjet')->name('getTachesOfAProjet');
+    Route::post('/', 'TacheController@saveTache')->name('saveTache');
+    Route::get('/', 'TacheController@getAllTaches')->name('getAllTaches');
+    Route::put('/{tacheId}','TacheController@updateTache')->name('updateTache');
+    Route::get('/{tacheId}','TacheController@getTache')->name('getTache');
+    Route::delete('/{tacheId}','TacheController@deleteTache')->name('deleteTache');
    
 });
 

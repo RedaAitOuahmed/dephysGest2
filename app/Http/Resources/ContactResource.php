@@ -35,6 +35,8 @@ class ContactResource extends Resource
             'adresse'=> $this->when($this->adresse != null, $this->adresse),  
             'fax'=> $this->when($this->fax != null, $this->fax),  
             'addedBy'=> $addedBy_contactId,
+            'createdAt'=> $this->created_at,
+            'updatedAt'=> $this->updated_at,
         ];
                
         if( $this->contactable_type == null)

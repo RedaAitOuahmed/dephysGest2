@@ -20,8 +20,8 @@ class CreateTachesTable extends Migration
             $table->boolean('visibleAuxAutres');
             $table->date('dateLimite');
             $table->string('etat');
-            $table->integer('projet_id');
-            $table->integer('addedBy_id');
+            $table->integer('projet_id')->default(1);
+            $table->integer('addedBy');
             $table->timestamps();
         });
     }
