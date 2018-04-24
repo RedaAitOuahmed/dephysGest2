@@ -69,7 +69,7 @@ class TacheController extends Controller
         }
         if( ! $tache->editableBy(Auth::user()->id))
         {
-            return response()->json(["message"=>"this Tache can't be edited by this user"],405);
+            return response()->json(["message"=>"Invalid Operation : this Tache can't be edited by this user, as it's not assigned to him nor he was he the one who created it neither is he a super user"],405);
         }
         $this->validateRequest($request);
 
@@ -108,9 +108,9 @@ class TacheController extends Controller
         {
             return response()->json(["message"=>"No Tache with id = $tacheId found"],404);
         }
-        if( $tache->addedBy  != Auth::user()->id)
+        if( $tache->addedBy  != Auth::user()->id || ! Auth::user()->superUser)
         {
-            return response()->json(["message"=>"this tache was created by another user"],405);
+            return response()->json(["message"=>"Invalid Operation : only a super user or the user who created this tache can delete it"],405);
         }
         if($tache->delete())
         {

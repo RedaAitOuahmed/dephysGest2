@@ -43,7 +43,7 @@ class Tache extends Model
      */
     public function editableBy($userId)
     {
-        if($this->addedBy == $userId)
+        if($this->addedBy == $userId || User::find($userId)->superUser)
         {
             return true;
         }
