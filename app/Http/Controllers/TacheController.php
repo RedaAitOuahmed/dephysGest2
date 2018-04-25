@@ -39,7 +39,7 @@ class TacheController extends Controller
     }
 
 
-    public function saveTache(Request $request)
+    public function save(Request $request)
     {
         $this->validateRequest($request);
 
@@ -62,14 +62,14 @@ class TacheController extends Controller
     /**
      * @return TacheResource::collection a list of all taches visible to the user making the request 
      */
-    public function getAllTaches()
+    public function getAll()
     {
         $query = Tache::where('visibleAuxAutres',true)->orWhere('addedBy',Auth::user()->id);
         return TacheResource::collection($query->get());
     }
 
 
-    public function updateTache(Request $request, $tacheId)
+    public function update(Request $request, $tacheId)
     {
         $tache = Tache::find($tacheId);
         if( ! $tache)
@@ -97,7 +97,7 @@ class TacheController extends Controller
     }
 
 
-    public function getTache($tacheId)
+    public function get($tacheId)
     {
         $tache = Tache::find($tacheId);
         if( ! $tache)
@@ -114,7 +114,7 @@ class TacheController extends Controller
     }
 
 
-    public function deleteTache($tacheId)
+    public function delete($tacheId)
     {
         $tache = Tache::find($tacheId);
         if( ! $tache)

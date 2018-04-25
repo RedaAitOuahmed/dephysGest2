@@ -18,7 +18,7 @@ class ContactController extends Controller
      
     }
 
-    public function saveContact(Request $request)
+    public function save(Request $request)
     {
         
         $this->validate($request,[
@@ -63,7 +63,7 @@ class ContactController extends Controller
         
     }
 
-    public function updateContact(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $contact =  Contact::find($id);
 
@@ -154,11 +154,11 @@ class ContactController extends Controller
              
     }
 
-    public function getAllContacts()
+    public function getAll()
     {       
         return   ContactResource::collection(\App\Contact::get());
     }
-    public function getContact($id)
+    public function get($id)
     {
         $contact =  Contact::find($id);
 
@@ -168,7 +168,7 @@ class ContactController extends Controller
         }
         return new ContactResource($contact);
     }
-    public function deleteContact($id)
+    public function delete($id)
     {
         $contact = Contact::find($id);
         if( !Auth::user()->superUser && $contact->addedBy != Auth::user()->id)

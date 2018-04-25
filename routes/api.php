@@ -21,11 +21,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('contacts')->group(function () {
     Route::get('/filterByTypeAndRelation', 'ContactController@getContactsFiltred' )
         ->name('getContactsFiltredByTypeAndRelation');
-    Route::post('/', 'ContactController@saveContact')->name('saveContact');
-    Route::get('/{id}','ContactController@getContact')->name('getContact');
-    Route::get('/','ContactController@getAllContacts')->name('getAllContacts');
-    Route::put('/{id}','ContactController@updateContact')->name('updateContact');
-    Route::delete('/{id}','ContactController@deleteContact')->name('deleteContact');
+    Route::post('/', 'ContactController@save')->name('saveContact');
+    Route::get('/{id}','ContactController@get')->name('getContact');
+    Route::get('/','ContactController@getAll')->name('getAllContacts');
+    Route::put('/{id}','ContactController@update')->name('updateContact');
+    Route::delete('/{id}','ContactController@delete')->name('deleteContact');
     Route::get('/workingAt/{companyContactId}','ContactController@getContactsWorkingAt')
             ->name('getContactsWorkingAt'); 
 });
@@ -34,9 +34,18 @@ Route::prefix('taches')->group(function () {
     Route::post('filterByProjetAndVisibilityAndAssignation','TacheController@getTachesFiltred')->name('getTachesFiltred');
     Route::get('projet/{projetId}','TacheController@getTachesOfAProjet')->name('getTachesOfAProjet');
     Route::delete('projet/{projetId}','TacheController@deleteTachesOfAProjet')->name('deleteTachesOfAProjet');
-    Route::post('/', 'TacheController@saveTache')->name('saveTache');
-    Route::get('/', 'TacheController@getAllTaches')->name('getAllTaches');
-    Route::put('/{tacheId}','TacheController@updateTache')->name('updateTache');
+    Route::post('/', 'TacheController@save')->name('saveTache');
+    Route::get('/', 'TacheController@getAll')->name('getAllTaches');
+    Route::put('/{tacheId}','TacheController@update')->name('updateTache');
+    Route::get('/{tacheId}','TacheController@get')->name('getTache');
+    Route::delete('/{tacheId}','TacheController@delete')->name('deleteTache');
+   
+});
+
+Route::prefix('projets')->group(function () {
+    Route::post('/', 'ProjetController@saveProjet')->name('saveProjet');
+    Route::get('/', 'ProjetController@getAllTaches')->name('getAllProjets');
+    Route::put('/{projetId}','ProjetController@updateTache')->name('updateTache');
     Route::get('/{tacheId}','TacheController@getTache')->name('getTache');
     Route::delete('/{tacheId}','TacheController@deleteTache')->name('deleteTache');
    
