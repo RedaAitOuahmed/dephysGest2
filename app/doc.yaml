@@ -393,11 +393,11 @@ paths:
         501:
           description: "No taches to delete"
   /taches/filterByProjetAndVisibilityAndAssignation:
-    get:
+    post:
       tags:
       - "taches"
       summary: "filter taches by projet, visibility, and assignation"
-      description: "Projet : Multiple projet values can be provided with comma separated strings, a logical OR operation will be performed to return the results. Visibility : public or perso. Assignation : taches that the user assigned or taches assigned to the user, or all taches."
+      description: "Projet : Multiple projet values can be provided with comma separated strings, a logical OR operation will be performed to return the results. Visibility : public or perso. Assignation : taches that the user assigned or taches assigned to the user, or all taches.a logical AND operation will be performed between the 3 filters"
       operationId: "filterTachesByProjet_Visibility_Assignation"
       consumes:
       - 'application/json'
@@ -414,7 +414,6 @@ paths:
         in: "query"
         type: "string"
         enum:
-        - "all"
         - "userAssigned"
         - "assignedToUser"
       - name: "projetIds"

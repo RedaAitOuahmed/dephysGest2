@@ -35,11 +35,13 @@ class TacheController extends Controller
             }],
         ]);
     }
+
     public function saveTache(Request $request)
     {
         $this->validateRequest($request);
 
-        $tache =  new \App\Tache($request->all() + ['addedBy' => Auth::user()->id]);
+        $tache =  new \App\Tache($request->all());
+        $tache->addedBy = Auth::user()->id;
         if($tache->save())
         {
             if($request->assignedTo)
@@ -154,6 +156,20 @@ class TacheController extends Controller
             return response()->json(["message"=>"Succeded Operation, all 'taches' of the 'projet' were deleted"],200);
         }
         return response()->json(["message"=>"Internal Server Error"],500);
+    }
+
+    public function getTachesFiltred(Request $request)
+    {
+        $this->validate($request,[
+            'visibility' =>'in:perso,public',
+            'assignation' => 'in:userAssigned,addignedToUser',
+            'projetIds.*' => [function ($attribute, $value, $fail) {
+                if (! \App\Projet::find($value)) {
+                    $fail(':attribute is an invalid projet id !');
+                }
+            }],
+        ]);
+        return response()->json(['message'=>$request->all()],200);
     }
 
 }

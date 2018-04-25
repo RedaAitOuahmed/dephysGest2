@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tache extends Model
 {
     protected $fillable = [
-        'nom','description','visibleAuxAutres','dateLimite','etat','projet_id','addedBy'
+        'nom','description','visibleAuxAutres','dateLimite','etat','projet_id',
     ];
     public function projet()
     {
