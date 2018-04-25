@@ -405,20 +405,19 @@ paths:
       - "application/json"
       parameters:
       - name: "visibility"
-        in: "query"
+        in: "form-data"
         type: "string"
         enum:
         - "perso"
         - "public"
       - name: "assignation"
-        in: "query"
+        in: "form-data"
         type: "string"
         enum:
         - "userAssigned"
         - "assignedToUser"
       - name: "projetIds"
-        in: "query"
-        required: true
+        in: "form-data"
         type: "array"
         items:
           type: "integer"
@@ -430,8 +429,8 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Contact"
-        400:
-          description: "Invalid types and relations values"    
+        422:
+          description: "The given data was invalid"    
   
   /fichiers/tache:
       post:

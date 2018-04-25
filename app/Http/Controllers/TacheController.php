@@ -15,6 +15,8 @@ class TacheController extends Controller
         $this->middleware('auth:api');
      
     }
+
+
     protected function validateRequest(Request $request)
     {
         $this->validate($request, [
@@ -36,6 +38,7 @@ class TacheController extends Controller
         ]);
     }
 
+
     public function saveTache(Request $request)
     {
         $this->validateRequest($request);
@@ -54,6 +57,8 @@ class TacheController extends Controller
         return response()->json(["message"=>"Server internal Error"],500);     
         
     }
+
+
     /**
      * @return TacheResource::collection a list of all taches visible to the user making the request 
      */
@@ -62,6 +67,8 @@ class TacheController extends Controller
         $query = Tache::where('visibleAuxAutres',true)->orWhere('addedBy',Auth::user()->id);
         return TacheResource::collection($query->get());
     }
+
+
     public function updateTache(Request $request, $tacheId)
     {
         $tache = Tache::find($tacheId);
@@ -88,6 +95,8 @@ class TacheController extends Controller
         return response()->json(["message"=>"Server internal Error"],500);
 
     }
+
+
     public function getTache($tacheId)
     {
         $tache = Tache::find($tacheId);
@@ -103,6 +112,8 @@ class TacheController extends Controller
         return new TacheResource($tache);
 
     }
+
+
     public function deleteTache($tacheId)
     {
         $tache = Tache::find($tacheId);
@@ -122,6 +133,8 @@ class TacheController extends Controller
 
     }
 
+
+
     public function getTachesOfAProjet($projetId)
     {
         $projet = Projet::find($projetId);
@@ -136,6 +149,10 @@ class TacheController extends Controller
         
         return TacheResource::collection($query->get());
     }
+
+    /**
+     * only a super user can delete all taches of a projet
+     */
     public function deleteTachesOfAProjet($projetId)
     {
         $projet = Projet::find($projetId);
@@ -157,19 +174,59 @@ class TacheController extends Controller
         }
         return response()->json(["message"=>"Internal Server Error"],500);
     }
-
+    // the tasks that the user assigned are basically the ones he created
+    /**
+     * filters tache based on 3 filters : 
+     * @param visibility
+     * @param assignation
+     * @param projetIds
+     * a logical AND is performed between the filters, if a filter value is null then it's ignored
+     */
     public function getTachesFiltred(Request $request)
     {
         $this->validate($request,[
             'visibility' =>'in:perso,public',
-            'assignation' => 'in:userAssigned,addignedToUser',
+            'assignation' => 'in:userAssigned,assignedToUser',
             'projetIds.*' => [function ($attribute, $value, $fail) {
                 if (! \App\Projet::find($value)) {
                     $fail(':attribute is an invalid projet id !');
                 }
             }],
         ]);
-        return response()->json(['message'=>$request->all()],200);
+
+        $query = Tache::where(function($query) use ($request)
+        {
+            if($request->visibility == 'perso')
+            {
+                $query->where('addedBy','=',Auth::user()->id)->where('visibleAuxAutres','=',false);
+            }else if ($request->visibility == 'public')
+            {
+                $query->where('visibleAuxAutres','=',true);
+            }else
+            {
+                $query->where(function($query){
+                    $query->where('visibleAuxAutres',true)->orWhere('addedBy',Auth::user()->id);
+                });
+            }
+
+
+            if($request->assignation == 'userAssigned')
+            {
+                $query->where('addedBy','=',Auth::user()->id);
+            }else if ($request->assignation == 'assignedToUser')
+            {
+                $query->whereHas('assigned_to', function ($query) {
+                    $query->where('users.id', '=', Auth::user()->id);
+                });
+            }
+
+            if($request->projetIds)
+            {
+                $query->whereIn('projet_id',$request->projetIds);
+            }
+        });
+
+        return TacheResource::collection($query->get());
     }
 
 }
