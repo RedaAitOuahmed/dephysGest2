@@ -23,7 +23,7 @@ class TacheController extends Controller
             'nom' => 'required',
             'visibleAuxAutres' => 'required | boolean',
             'dateLimite' => 'nullable|date',
-            'projetId' => [function ($attribute, $value, $fail) {
+            'projet_id' => [function ($attribute, $value, $fail) {
                 if (! \App\Projet::find($value)) {
                     $fail(':attribute is an invalid projet id !');
                 }

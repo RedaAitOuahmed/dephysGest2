@@ -43,11 +43,11 @@ Route::prefix('taches')->group(function () {
 });
 
 Route::prefix('projets')->group(function () {
-    Route::post('/', 'ProjetController@saveProjet')->name('saveProjet');
-    Route::get('/', 'ProjetController@getAllTaches')->name('getAllProjets');
-    Route::put('/{projetId}','ProjetController@updateTache')->name('updateTache');
-    Route::get('/{tacheId}','TacheController@getTache')->name('getTache');
-    Route::delete('/{tacheId}','TacheController@deleteTache')->name('deleteTache');
+    Route::post('/', 'ProjetController@save')->name('saveProjet');
+    Route::get('/', 'ProjetController@getAll')->name('getAllProjets');
+    Route::put('/{id}','ProjetController@update')->name('updateProjet');
+    Route::get('/{id}','ProjetController@get')->name('getProjet');
+    Route::delete('/{id}','ProjetController@delete')->name('deleteProjet');
    
 });
 
