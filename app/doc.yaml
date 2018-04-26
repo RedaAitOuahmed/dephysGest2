@@ -149,9 +149,8 @@ paths:
       get:
         tags:
         - "fichiers"
-        summary: "get All fichiers"
+        summary: "get All fichiers visible to the user"
         description: ""
-        operationId: "getAllfichiers"
         produces:
         - "application/json"
         responses:
@@ -161,41 +160,80 @@ paths:
               type: "array"
               items:
                 $ref: "#/definitions/Fichier"
-          404:
-            description: "No fichier found"
-  /fichiers/{fichierId}:
-      put:
+      post:
         tags:
         - "fichiers"
-        summary: "Update an existing fichier"
+        summary: "uploads a file and create a Fichier instance"
         description: ""
-        operationId: "updatefichier"
         consumes:
-        - "application/x-www-form-urlencoded"
+        - "application/form-data"
         produces:
         - "application/json"
         parameters:
         - in: "formData"
-          name: "fichierObject"
-          description: " New fichier data to be updated"
+          name: "nom"
+          description: "name of the file that will be displayed to the user"
+          type: "string"
           required: true
-          schema:
-            $ref: "#/definitions/Fichier"
+        - in: "formData"
+          name: "tache_id"
+          description: "id of the tache that this file should bet attached to"
+          type: "string"
+          required: true
+        - in: "formData"
+          name: "file"
+          type: "file"
+          required: true
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/Fichier"
+          422:
+            description: "Validation exception"
+          500:
+            description: "internal server error"
+  /fichiers/update/{id}:
+      post:
+        tags:
+        - "fichiers"
+        summary: "Update an existing fichier"
+        description: "Only the user who added the file can access this method"
+        consumes:
+        - "application/form-data"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "formData"
+          name: "nom"
+          description: "name of the file that will be displayed to the user"
+          type: "string"
+        - in: "formData"
+          name: "tache_id"
+          description: "id of the tache that this file should bet attached to"
+          type: "string"
         - in: "path"
-          name: "fichierId"
+          name: "id"
           type: "integer"
           required: true
         - in: "formData"
-          name: "fichier"
+          name: "file"
           type: "file"
           required: false
         responses:
-          400:
-            description: "Invalid ID supplied"
+          200:
+            description: "fichier updated succefully"
+          405:
+            description: "Invalid Operation : a fichier can be edited only by the user who added it"
           404:
             description: "Fichier not found"
-          405:
+          422:
             description: "Validation exception"
+          500:
+            description: "internal server error"
+  /fichiers/{id}:
       get:
         tags:
         - "fichiers"
@@ -206,7 +244,7 @@ paths:
         - "application/json"
         parameters:
         - in: "path"
-          name: "fichierId"
+          name: "id"
           type: "integer"
           required: true
           
@@ -215,18 +253,15 @@ paths:
             description : "Succeded Operation"
             schema :
               $ref : "#/definitions/Fichier"
-          400:
-            description: "Invalid ID supplied"
           404:
             description: "fichier not found"
           405:
-            description: "Validation exception"
+            description: "Invalid Operation : this fichier belongs to another user and to a tache that is not visible by this user"
       delete:
         tags:
         - "fichiers"
         summary: "Deletes a fichier"
-        description: ""
-        operationId: "deletefichier"
+        description: "only the user who added the file and the super user can delete it."
         produces:
         - "application/json"
         parameters:
@@ -236,34 +271,91 @@ paths:
           required: true
         responses:
           200:
-            description: "fichier Deleted"
-          400:
-            description: "Invalid ID supplied"
+            description: "fichier deleted succefully"
           404:
             description: "fichier not found"
-  /taches:
-      post:
+          405:
+            description: "Invalid Operation : a fichier can be deleted only by the user who added it or a super user"
+          500:
+            description: "internal server error"
+  
+  /fichiers/tache/{id}:
+      get:
         tags:
-        - "taches"
-        summary: "Add a new tache"
+        - "fichiers"
+        summary: "get All Fichiers related to this tache"
         description: ""
-        operationId: "addTache"
-        consumes:
-        - "application/json"
+        operationId: "getAllFichiers"
         produces:
         - "application/json"
         parameters:
-        - in: "body"
-          name: "tache"
-          description: "Tache object that needs to be added to the database"
+        - in : "path"
+          name : "tacheId"
           required: true
-          schema:
-            $ref: "#/definitions/Tache"
+          type : "integer"
         responses:
-          405:
-            description: "Invalid input"
           200:
-            description: "Tache added successfully"
+            description : "Succeded Operation"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/Fichier"
+          404:
+            description: "No Tache found"
+          405:
+            description: "Invalid operation : this Tache can't be seen by this user"
+  /fichiers/download/{id}:
+      get:
+        tags:
+        - "fichiers"
+        summary: "downloads file of this Fichier"
+        description: ""
+        produces:
+        - "application/json"
+        parameters:
+        - in : "path"
+          name : "id"
+          required: true
+          type : "integer"
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema:
+              type: "file"
+          404:
+            description: "fichier not found"
+          405:
+            description: "Invalid Operation : this fichier belongs to another user and to a tache that is not visible by this user"
+  /fichiers/search:  
+    post:
+        tags:
+        - "fichiers"
+        summary: "Update an existing fichier"
+        description: "Only the user who added the file can access this method"
+        consumes:
+        - "application/form-data"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "formData"
+          name: "nom"
+          type: "string"
+        - in: "formData"
+          name: "startDate"
+          type: "date"
+        - in: "formData"
+          name: "endDate"
+          type: "date"
+        responses:
+          200:
+            description: "Succeded operation"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/Fichier"
+
+  
+  /taches:
       get:
         tags:
         - "taches"
@@ -441,59 +533,7 @@ paths:
         422:
           description: "The given data was invalid"    
   
-  /fichiers/tache:
-      post:
-        tags:
-        - "fichiers"
-        summary: "upload a new fichier to a tache"
-        description: ""
-        operationId: "addFichier"
-        consumes:
-        - "multipart/form-data"
-        - "application/json"
-        produces:
-        - "application/json"
-        parameters:
-        - name: "fichierObject"
-          in: "formData"
-          description: "fichier object that needs to be added to the database"
-          required: true
-          schema:
-            $ref: "#/definitions/Fichier"
-        - name: "file"
-          in: "formData"
-          description: "file to upload"
-          required: true
-          type: "file"
-        responses:
-          405:
-            description: "Invalid input"
-          200:
-            description: "Fichier uploaded successfully"
-  /fichiers/tache/{tacheId}:
-      get:
-        tags:
-        - "fichiers"
-        summary: "get All Fichiers related to this tache"
-        description: ""
-        operationId: "getAllFichiers"
-        produces:
-        - "application/json"
-        parameters:
-        - in : "path"
-          name : "tacheId"
-          required: true
-          type : "integer"
-        responses:
-          200:
-            description : "Succeded Operation"
-            schema:
-              type: "array"
-              items:
-                $ref: "#/definitions/Fichier"
-          404:
-            description: "No Tache found"
-
+  
 
   /contacts:
       post:
@@ -794,12 +834,18 @@ definitions:
         type: 'integer'
       nom:
         type : 'string'
-      chemin:
+      taille:
         type : 'string'
+        description: 'file size in bytes'
       addedBy:
         type: "integer"
         description: "Contact id of the user who added this file"
       tache_id:
         type: 'integer'
+      created_at:
+        type: 'timestamp'
+      updated_at:
+        type: 'timestamp'
+      
         
           

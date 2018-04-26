@@ -51,3 +51,15 @@ Route::prefix('projets')->group(function () {
    
 });
 
+Route::prefix('fichiers')->group(function () {
+    Route::post('/search', 'FichierController@search')->name('searchFichier');
+    Route::get('/download/{id}', 'FichierController@download')->name('downloadFichier');
+    Route::get('/tache/{tacheId}', 'FichierController@getAllOfATache')->name('getAllFichiersOfATache');
+    Route::post('/', 'FichierController@save')->name('saveFichier');
+    Route::get('/', 'FichierController@getAll')->name('getAllFichiers');
+    Route::post('/update/{id}','FichierController@update')->name('updateFichier');
+    Route::get('/{id}','FichierController@get')->name('getFichier');
+    Route::delete('/{id}','FichierController@delete')->name('deleteFichier');
+   
+});
+
