@@ -156,7 +156,7 @@ class ContactController extends Controller
 
     public function getAll()
     {       
-        return   ContactResource::collection(\App\Contact::get());
+        return   ContactResource::collection(\App\Contact::paginate());
     }
     public function get($id)
     {
@@ -201,7 +201,7 @@ class ContactController extends Controller
         $company = $contact->contactable;
         if($company)
         {
-            return   ContactResource::collection($company->employees()->get());
+            return   ContactResource::collection($company->employees()->paginate());
 
         }
         return response()->json(["message"=>"can't find  company contact with id : $id"],404);
@@ -284,7 +284,7 @@ class ContactController extends Controller
             
         }
         //returning a ressource collection of the results of the query
-        return  ContactResource::collection($query->get());
+        return  ContactResource::collection($query->paginate());
         
     }
 }
