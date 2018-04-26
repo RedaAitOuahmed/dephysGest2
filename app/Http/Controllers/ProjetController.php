@@ -21,7 +21,7 @@ class ProjetController extends Controller
      */
     public function getAll()
     {
-        return ProjetResource::collection(Projet::get());
+        return ProjetResource::collection(Projet::paginate());
     }
 
     /**
