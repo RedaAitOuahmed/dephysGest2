@@ -65,7 +65,7 @@ class TacheController extends Controller
     public function getAll()
     {
         $query = Tache::where('visibleAuxAutres',true)->orWhere('addedBy',Auth::user()->id);
-        return TacheResource::collection($query->get());
+        return TacheResource::collection($query->paginate());
     }
 
 
@@ -147,7 +147,7 @@ class TacheController extends Controller
             $query->where('visibleAuxAutres',true)->orWhere('addedBy',Auth::user()->id);
         });
         
-        return TacheResource::collection($query->get());
+        return TacheResource::collection($query->paginate());
     }
 
     /**
@@ -226,7 +226,7 @@ class TacheController extends Controller
             }
         });
 
-        return TacheResource::collection($query->get());
+        return TacheResource::collection($query->paginate());
     }
 
 }
