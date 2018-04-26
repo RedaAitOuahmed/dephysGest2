@@ -30,7 +30,7 @@ class FichierController extends Controller
             $query->where('visibleAuxAutres',true);
         })->orWhere('addedBy',Auth::user()->id);
 
-        return FichierResource::collection($query->get());
+        return FichierResource::collection($query->paginate());
     }
 
     
@@ -71,7 +71,7 @@ class FichierController extends Controller
             }
         });
 
-        return FichierResource::collection($query->get());
+        return FichierResource::collection($query->paginate());
     }
 
     /**
@@ -115,7 +115,7 @@ class FichierController extends Controller
         {
             return response()->json(["message"=>"Invalid operation : this Tache can't be seen by this user"],405);
         }
-        return FichierResource::collection($tache->fichiers);
+        return FichierResource::collection($tache->fichiers()->paginate());
 
     }
     /**
