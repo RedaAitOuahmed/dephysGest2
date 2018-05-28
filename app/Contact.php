@@ -12,7 +12,7 @@ class Contact extends Model
      * a contact can be : just a contact, a Personne, an Entreprise or a user
      */
 
-    protected $fillable = ['nom','relation','tel','email','adresse','fax'];
+    protected $fillable = ['nom','tel','email','adresse','fax'];
    
 
     public function contactable()
@@ -112,7 +112,7 @@ class Contact extends Model
     {
         return $this->relations()->distinct()->pluck('relation')->toArray();
     }
-    public function setRelations(array $relations)
+    public function set_relations(array $relations)
     {
        $oldRelations = $this->getRelations();
 

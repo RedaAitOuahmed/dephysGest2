@@ -25,6 +25,7 @@ class TacheResource extends Resource
             'nom' => $this->nom,
             'description' => $this->description,
             'visibleAuxAutres' => $this->visibleAuxAutres,
+            'dateLimite' => $this->dateLimite,
             'etat' => $this->etat,
             'projetId' => $this->projet->id,
             'addedBy' => $addedBy_contactId,

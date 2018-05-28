@@ -330,8 +330,9 @@ paths:
     post:
         tags:
         - "fichiers"
-        summary: "Update an existing fichier"
-        description: "Only the user who added the file can access this method"
+        summary: "Searches Fichiers by name, and date interval"
+        description: "this endpoint will return any Fichier that has a name %like the one searcher for, 
+        and if either onr of the created_at and updated_at fields match the date interval"
         consumes:
         - "application/form-data"
         produces:
@@ -373,6 +374,27 @@ paths:
                 $ref: "#/definitions/Tache"
           404:
             description: "No Tache found"
+      post:
+        tags:
+        - "taches"
+        summary: "Create a tache"
+        description: "a Tache can be created by any user and assigned to any user"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "body"
+          name: "tache"
+          description: " New Tache to be added"
+          required: true
+          schema:
+            $ref: "#/definitions/Tache"
+        responses:
+          201:
+            description: "Tache added"
+          500:
+            description: "Server Internal Error"
   /taches/{tacheId}:
       put:
         tags:
@@ -397,6 +419,8 @@ paths:
           type: "integer"
           required: true
         responses:
+          200:
+            description: "Tache updated"
           400:
             description: "Invalid ID supplied"
           404:
@@ -548,20 +572,48 @@ paths:
         - "application/json"
         parameters:
         - in: "formData"
-          name: "type"
+          name: "nom"
           required: true
+          type: "string"
+        - in: "formData"
+          name: "type"
           type: "string"
           enum:
             - 'Personne'
             - 'Entreprise'
+        - $ref: "#/parameters/relations"
         - in: "formData"
-          name: "nom"
-          required: true
+          name: "email"
           type: "string"
-        - in: "formData"
-          name: "nom"
-          required: true
+        - in : "formData"
+          name : "tel"
           type: "string"
+        - in : "formData"
+          name : "adresse"
+          type: "string"
+        - in : "formData"
+          name : "fax"
+          type: "string"
+        - in : "formData"
+          name : "prenom"
+          type: "string"
+          description: "will be taken into consideration only if type is Personne"
+        - in : "formData"
+          name : "siren"
+          type: 'string'
+          description: "will be taken into consideration only if type is Entreprise"
+        - in : "formData"
+          name : "siret"
+          type: 'string'
+          description: "will be taken into consideration only if type is Entreprise"
+        - in : "formData"
+          name : "assujettiTVA"
+          type : boolean
+          description: "will be taken into consideration only if type is Entreprise"
+        - in : "formData"
+          name : "numTVA"
+          type: 'string'
+          description: "will be taken into consideration only if type is Entreprise"
 
         responses:
           500:
@@ -665,16 +717,54 @@ paths:
         produces:
         - "application/json"
         parameters:
-        - in: "body"
-          name: "contact"
-          description: " New Contact object data to be updated"
-          required: true
-          schema:
-            $ref: "#/definitions/Contact"
         - in: "path"
           name: "contactId"
           type: "integer"
           required: true
+        - in: "formData"
+          name: "nom"
+          required: false
+          type: "string"
+        - in: "formData"
+          name: "type"
+          type: "string"
+          enum:
+            - 'Personne'
+            - 'Entreprise'
+        - $ref: "#/parameters/relations"
+        - in: "formData"
+          name: "email"
+          type: "string"
+        - in : "formData"
+          name : "tel"
+          type: "string"
+        - in : "formData"
+          name : "adresse"
+          type: "string"
+        - in : "formData"
+          name : "fax"
+          type: "string"
+        - in : "formData"
+          name : "prenom"
+          type: "string"
+          description: "will be taken into consideration only if type is Personne"
+        - in : "formData"
+          name : "siren"
+          type: 'string'
+          description: "will be taken into consideration only if type is Entreprise"
+        - in : "formData"
+          name : "siret"
+          type: 'string'
+          description: "will be taken into consideration only if type is Entreprise"
+        - in : "formData"
+          name : "assujettiTVA"
+          type : boolean
+          description: "will be taken into consideration only if type is Entreprise"
+        - in : "formData"
+          name : "numTVA"
+          type: 'string'
+          description: "will be taken into consideration only if type is Entreprise"
+
         responses:
           400:
             description: "Invalid Operation : can't cast User type to Entrerpise type"
@@ -695,10 +785,7 @@ paths:
         produces:
         - "application/json"
         parameters:
-        - in: "path"
-          name: "contactId"
-          type: "integer"
-          required: true
+       
           
         responses:
           200:
@@ -815,6 +902,7 @@ definitions:
         type: 'integer'
       nom:
         type : 'string'
+        decription: "has to be unique"
       description:
         type : 'string'
       visibleAuxAutres:
@@ -857,6 +945,17 @@ definitions:
         type: 'timestamp'
       updated_at:
         type: 'timestamp'
-      
+parameters:
+  relations:
+        name: 'relations'
+        in : 'formData'
+        type: "array"
+        items:
+          type: "string"
+          enum:
+            - "client"
+            - "fournisseur"
+            - "prospect"
+            - "collegue"      
         
           

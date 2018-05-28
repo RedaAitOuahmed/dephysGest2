@@ -20,9 +20,9 @@ class TacheController extends Controller
     protected function validateRequest(Request $request)
     {
         $this->validate($request, [
-            'nom' => 'required',
+            'nom' => 'required|unique:taches',
             'visibleAuxAutres' => 'required | boolean',
-            'dateLimite' => 'nullable|date',
+            'dateLimite' => 'nullable|date|after_or_equal:today',
             'projet_id' => [function ($attribute, $value, $fail) {
                 if (! \App\Projet::find($value)) {
                     $fail(':attribute is an invalid projet id !');
@@ -89,7 +89,7 @@ class TacheController extends Controller
         $tache->update($request->all());
         if($tache->save())
         {
-            return response()->json(["message"=>"Tache updated", "id"=> $tache->id],201); 
+            return response()->json(["message"=>"Tache updated", "id"=> $tache->id],200); 
         }
         
         return response()->json(["message"=>"Server internal Error"],500);

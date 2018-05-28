@@ -24,7 +24,8 @@ class ContactController extends Controller
         $this->validate($request,[
             'nom'=>'required',
             'type'=>'in:Personne,Entreprise',
-            'relations.*'=>'in:client,fournisseur,collegue,prospect'
+            'relations.*'=>'in:client,fournisseur,collegue,prospect',
+            'email' => 'email',
         ]);
 
        
@@ -53,7 +54,7 @@ class ContactController extends Controller
             $contact = $contact->contacts()->first();
             if($request->relations)
             {
-                $contact->setRelations($request->relations);
+                $contact->set_relations($request->relations);
             }
             
             return response()->json(["message"=>"Contact Added", "id"=> $contact->id],201);   
@@ -79,7 +80,8 @@ class ContactController extends Controller
         $this->validate($request,[
             'nom'=>'required',
             'type'=>'in:Personne,Entreprise',
-            'relations.*'=>'in:client,fournisseur,collegue,prospect'
+            'relations.*'=>'in:client,fournisseur,collegue,prospect',
+            'email' => 'email',
         ]);
 
         if($request->type == 'Entreprise' && $contact->getType() == 'User')
@@ -87,7 +89,11 @@ class ContactController extends Controller
             return response()->json(["message"=>"Invalid Operation : can't cast User type to Entrerpise type"],400);
         }
         //first we update the relations
-        $contact->setRelations($request->relations);
+        if($request->relations)
+        {
+            $contact->set_relations($request->relations);
+        }
+        
                 
         // case when we're not changing the type of the contact :
         if($request->type == null || $request->type == $contact->getType() || ($request->type == 'Personne' && $contact->getType() == 'User') )

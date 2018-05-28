@@ -240,7 +240,6 @@ class FichierController extends Controller
         {
             return response()->json(['message'=>'Invalid Operation : a fichier can be deleted only by the user who added it or a super user'],405);
         }
-        Storage::delete($fichier->chemin);
         if ($fichier->delete())
         {
             return response()->json(['message'=> 'fichier deleted succefully',

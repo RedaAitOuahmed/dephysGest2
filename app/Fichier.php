@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+
 
 class Fichier extends Model
 {
@@ -16,6 +18,14 @@ class Fichier extends Model
     public function addedBy()
     {
        return $this->belongsTo('App\User','addedBy'); 
+    }
+    public function delete()
+    { 
+        if(Storage::exists($this->chemin))
+        {
+            Storage::delete($this->chemin);
+        }        
+        parent::delete();
     }
 
 }
