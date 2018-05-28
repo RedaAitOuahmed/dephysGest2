@@ -25,7 +25,7 @@ class Fichier extends Model
         {
             Storage::delete($this->chemin);
         }        
-        parent::delete();
+        return parent::delete();
     }
 
 }
