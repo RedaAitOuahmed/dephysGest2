@@ -547,12 +547,22 @@ paths:
         produces:
         - "application/json"
         parameters:
-        - in: "body"
-          name: "contact"
-          description: "Contact object that needs to be added to the database"
+        - in: "formData"
+          name: "type"
           required: true
-          schema:
-            $ref: "#/definitions/Contact"
+          type: "string"
+          enum:
+            - 'Personne'
+            - 'Entreprise'
+        - in: "formData"
+          name: "nom"
+          required: true
+          type: "string"
+        - in: "formData"
+          name: "nom"
+          required: true
+          type: "string"
+
         responses:
           500:
             description: "Server internal error"
@@ -638,10 +648,11 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Contact"
-        400:
-          description: "Invalid company contact id values"
         404:
-          description: "Company not found"
+          description: "No Contact with id = $id found"
+        405:
+          description: "Invalid Operation : Contact id is not of an Entreprise"
+
   /contacts/{contactId}:
       put:
         tags:

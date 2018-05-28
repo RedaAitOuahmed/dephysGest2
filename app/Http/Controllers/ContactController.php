@@ -195,16 +195,16 @@ class ContactController extends Controller
 
         if( ! $contact)
         {
-            return response()->json(["message"=>"No contact with id = $id found"],404);
+            return response()->json(["message"=>"No contact with id = $companyContactId found"],404);
         }
         // retrieves an object of type Entreprise
         $company = $contact->contactable;
-        if($company)
+        if($company && \get_class($company) == 'App\Entreprise')
         {
             return   ContactResource::collection($company->employees()->paginate());
 
         }
-        return response()->json(["message"=>"can't find  company contact with id : $id"],404);
+        return response()->json(["message"=>"Invalid Operation : Contact id is not of an Entreprise"],405);
     }
 
     /**
@@ -219,7 +219,7 @@ class ContactController extends Controller
     {
         $existingTypes = ['Undefined','Entreprise','Personne','User'];
         $existingRelations = \App\Relation::select('relation')->distinct()->pluck('relation')->toArray();
-       
+        $existingRelations = \array_merge($existingRelations, ['client','fournisseur','prospect','collegue']);
         if($request->relations)
         {
              // validation of the relations 
