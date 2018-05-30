@@ -63,3 +63,12 @@ Route::prefix('fichiers')->group(function () {
    
 });
 
+Route::prefix('produits')->group(function () {
+    Route::post('/filter', 'ProduitController@getProduitsFiltred')->name('filterProduits');
+    Route::post('/', 'ProduitController@save')->name('saveProduit');
+    Route::get('/', 'ProduitController@getAll')->name('getAllProduit');
+    Route::put('/{id}','ProduitController@update')->name('updateProduit');
+    Route::get('/{id}','ProduitController@get')->name('getProduit');
+    Route::delete('/{id}','ProduitController@delete')->name('deleteProduit');
+    });
+

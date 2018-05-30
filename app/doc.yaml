@@ -818,9 +818,235 @@ paths:
             description: "Contact not found"
           410:
             description: "Invalid Operation : can be deleted only by a super user or by the user who added this contact"
-          
+  
+  
+  
+  /produits:
+    post:
+      tags:
+      - "produits"
+      summary: "Add a new Produit"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: 'body'
+        name: 'nom'
+        type: 'string'
+        required: true
+        description: 'needs to be unique for each Produit'
+      - in: 'body'
+        name: 'codeBarre'
+        type: 'string'
+        description: 'needs to be unique for each Produit'
+      - in: 'body'
+        name: 'prixVente'
+        type: 'number'
+      - in: 'body'
+        name: 'estAchete'
+        type: 'boolean'
+      - in: 'body'
+        name: 'estVendu'
+        type: 'boolean'
+      - in: 'body'
+        name: 'description'
+        type: 'string'
+      - in: 'body'
+        name: 'categorie_id'
+        type: 'integer'
+      - in: 'body'
+        name: "fournisseurs"
+        schema:
+          $ref: "#/definitions/fournisseurs_param"
+
+    get:
+      tags:
+      - "produits"
+      summary: "get all Produits"
+      produces:
+      - "application/json"
+      responses:
+          200:
+            description : "Succeded Operation"
+            schema:
+              type: 'object'
+              properties:
+                data:
+                  type: 'array'
+                  items:
+                    $ref: "#/definitions/Produit"            
+                links:
+                  $ref: "#/pagination/links"
+                meta:
+                  $ref: "#/pagination/meta"
+          500:
+            description: "Internal Server Error"
+  /produits/{produitId}:
+      get:
+        tags:
+        - "produits"
+        summary: "get Produit by id"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "produitId"
+          type: "integer"
+          required: true
+        
+        responses:
+            200:
+              description : "Succeded Operation"
+              schema:               
+                $ref: "#/definitions/Produit"        
+            500:
+              description: "Internal Server Error"
+      delete:
+        tags:
+        - "produits"
+        summary: "delete a Produit"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "produitId"
+          type: "integer"
+          required: true
+        responses:
+            200:
+              description : "produit deleted succefully"
+            404:
+              description : "Produit not found"  
+            405:
+              description : "Invalid Operation : only a super user and the user who added this Produit can delete it"   
+            500:
+              description: "Internal Server Error"
+      put:
+        tags:
+        - "produits"
+        summary: "update an existing Produit"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "produitId"
+          type: "integer"
+          required: true
+        - in: 'body'
+          name: 'nom'
+          type: 'string'
+          required: true
+          description: 'needs to be unique for each Produit'
+        - in: 'body'
+          name: 'codeBarre'
+          type: 'string'
+          description: 'needs to be unique for each Produit'
+        - in: 'body'
+          name: 'prixVente'
+          type: 'number'
+        - in: 'body'
+          name: 'estAchete'
+          type: 'boolean'
+        - in: 'body'
+          name: 'estVendu'
+          type: 'boolean'
+        - in: 'body'
+          name: 'description'
+          type: 'string'
+        - in: 'body'
+          name: 'categorie_id'
+          type: 'integer'
+        - in: 'body'
+          name: "fournisseurs"
+          description: "if this parameter is provided, this produit will be detached from all its previous fournisseurs"
+          schema:
+            $ref: "#/definitions/fournisseurs_param"
+  /produits/filter:
+    post:
+      tags:
+        - "produits"
+      summary: "filters produits"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: 'body'
+          name: 'categorieIds'
+          description: "list of categorie ids, if a produits belogns to one of these categories, then it passed this filter"
+          type: 'array'
+          items:
+            type: "integer"
+        - in: 'body'
+          name: 'estAchete'
+          type: 'boolean'
+          description: 'true filters in products that are bought, false filters in products that are not bought'
+        - in: 'body'
+          name: 'estVendu'
+          type: 'boolean'
+          description: 'true filters in products that are sold, false filters in products that are not sold'
+        - in: 'body'
+          name: 'addedByCurrentUser'
+          type: 'boolean'
+          description: 'true filters in products that were added by this user, false filters in products that were added by other users'
+        - in: 'body'
+          name: 'searchArgument'
+          type: 'string'
+          description: "this is used to search for a product by name or by codeBarre"
+              
+      
+      
+pagination:
+  links:
+    type: 'object'
+    properties:
+      first: 
+        type: 'string'
+      last: 
+        type: 'string'
+      prev: 
+        type: 'string'
+      next: 
+        type: 'string'
+  meta:
+    type: 'object'
+    properties:
+      current_page:
+        type: 'integer'
+      from:
+        type: 'integer'
+      last_page:
+        type: 'integer'
+      path:
+        type: 'string'
+      per_page:
+        type: 'string'
+      to:
+        type: 'integer'
+      total:
+        type: 'integer'
+
+
     
 definitions:
+
+  fournisseurs_param:
+        type: 'array'
+        items:
+          type: 'object'
+          properties:
+            id:
+              type: "integer"
+              description: "contact id of the Fournisseur if the fournisseur already exists"
+            nom:
+              type: "string"
+              description: "name of a new  contact that will be created. WARNING : will not be taken into consideration if id is not null"
+            prixAchat:
+              type: "number"
+              description: "buying price of this Produit from this Fournisseur"
         
   Relations:
         type: "array"
@@ -941,6 +1167,47 @@ definitions:
         description: "Contact id of the user who added this file"
       tache_id:
         type: 'integer'
+      created_at:
+        type: 'timestamp'
+      updated_at:
+        type: 'timestamp'
+  Produit:
+    type: "object"
+    properties:
+      id:
+        type: 'integer'
+      nom:
+        type : 'string'
+      codeBarre:
+        type : 'string'
+      prixVente:
+        type: 'number'
+      TVA:
+        type: 'number'
+        description: 'perecentage of the TVA on the product'
+      addedBy:
+        type: "integer"
+        description: "Contact id of the user who added this Produit"
+      estAchete:
+        type: 'boolean'
+      estVendu:
+        type: 'boolean'
+      description:
+        type: 'string'
+      categorie_id:
+        type: 'integer'
+      fournisseurs:
+        type: 'array'
+        items:
+          type: 'object'
+          properties:
+            id:
+              type: 'integer'
+              description: 'contact id of Fournisseur'
+            prixAchat:
+              description: buying price of the product from this Fournisseur
+              type: number
+            
       created_at:
         type: 'timestamp'
       updated_at:

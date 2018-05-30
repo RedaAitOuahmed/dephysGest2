@@ -22,7 +22,7 @@ class Contact extends Model
 
     public function produits()
     {
-        return $this->hasMany('App\Produits','fournisseurs_produits','id','id');
+        return $this->hasMany('App\Produits','fournisseurs_produits','fournisseur_id','produit_id');
     }
 
     public function addedBy()

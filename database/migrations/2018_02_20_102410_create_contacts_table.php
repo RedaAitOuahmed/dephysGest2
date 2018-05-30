@@ -29,6 +29,7 @@ class CreateContactsTable extends Migration
             $table->unique(['contactable_type','email']);
            
         });
+        
     }
 
     /**
