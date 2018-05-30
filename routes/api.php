@@ -72,3 +72,13 @@ Route::prefix('produits')->group(function () {
     Route::delete('/{id}','ProduitController@delete')->name('deleteProduit');
     });
 
+
+    Route::prefix('categories')->group(function () {
+        Route::post('/', 'CategorieController@save')->name('saveCategorie');
+        Route::get('/', 'CategorieController@getAll')->name('getAllCategories');
+        Route::put('/{id}','CategorieController@update')->name('updateCategorie');
+        Route::get('/{id}','CategorieController@get')->name('getCategorie');
+        Route::delete('/{id}','CategorieController@delete')->name('deleteCategorie');
+       
+    });
+

@@ -19,6 +19,8 @@ tags:
   description: "Used to classify tasks (Les Taches)"
 - name: "fichiers"
   description: "are uploaded to tasks (Les Taches)"
+- name: "produits"
+  description: "Everything about products (Les Produits)"
 schemes:
 - "http"
 paths:
@@ -996,7 +998,22 @@ paths:
           name: 'searchArgument'
           type: 'string'
           description: "this is used to search for a product by name or by codeBarre"
-              
+      responses:
+          200:
+            description : "Succeded Operation"
+            schema:
+              type: 'object'
+              properties:
+                data:
+                  type: 'array'
+                  items:
+                    $ref: "#/definitions/Produit"            
+                links:
+                  $ref: "#/pagination/links"
+                meta:
+                  $ref: "#/pagination/meta"
+          500:
+            description: "Internal Server Error"   
       
       
 pagination:
