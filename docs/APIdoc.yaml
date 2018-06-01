@@ -21,6 +21,8 @@ tags:
   description: "are uploaded to tasks (Les Taches)"
 - name: "produits"
   description: "Everything about products (Les Produits)"
+- name: "categories"
+  description: "Used to classify products (Les Produits)"
 schemes:
 - "http"
 paths:
