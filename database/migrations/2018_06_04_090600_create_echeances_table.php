@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDocumentsProduitsTable extends Migration
+class CreateEcheancesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateDocumentsProduitsTable extends Migration
      */
     public function up()
     {
-        Schema::create('documents_produits', function (Blueprint $table) {
+        Schema::create('echeances', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('document_id');
-            $table->integer('produit_id');
-            $table->float('quantite');
+            $table->double('sommePayee');
+            $table->double('sommeRestante');
+            $table->date('dueDate');
+            $table->unsignedInteger('addedBy');
+            $table->unsignedInteger('document_id');
+            $table->string('document_type');
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ class CreateDocumentsProduitsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('documents_produits');
+        Schema::dropIfExists('echeances');
     }
 }

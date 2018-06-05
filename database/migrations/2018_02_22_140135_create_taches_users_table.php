@@ -15,8 +15,8 @@ class CreateTachesUsersTable extends Migration
     {
         Schema::create('taches_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
-            $table->integer('tache_id');
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('tache_id');
             $table->timestamps();
         });
     }

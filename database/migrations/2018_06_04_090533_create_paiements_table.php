@@ -15,10 +15,10 @@ class CreatePaiementsTable extends Migration
     {
         Schema::create('paiements', function (Blueprint $table) {
             $table->increments('id');
-            $table->float('somePayee');
-            $table->string('payable_type');
-            $table->string('payable_id');
-            $table->integer('addedBy');
+            $table->double('somePayee');
+            $table->unsignedInteger('addedBy');
+            $table->unsignedInteger('document_id');
+            $table->string('document_type');
             $table->timestamps();
         });
     }

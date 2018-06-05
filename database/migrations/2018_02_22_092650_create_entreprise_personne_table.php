@@ -15,8 +15,8 @@ class CreateEntreprisePersonneTable extends Migration
     {
         Schema::create('entreprise_personne', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('personne_id');
-            $table->integer('entreprise_id');
+            $table->unsignedInteger('personne_id');
+            $table->unsignedInteger('entreprise_id');
             $table->string('fonction')->nullable();
             $table->timestamps();
         });

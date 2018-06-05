@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTachesTable extends Migration
+class CreateDraftFacturesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateTachesTable extends Migration
      */
     public function up()
     {
-        Schema::create('taches', function (Blueprint $table) {
+        Schema::create('draft_factures', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nom')->unique();
-            $table->string('description')->nullable();
-            $table->boolean('visibleAuxAutres');
-            $table->date('dateLimite');
-            $table->string('etat');
-            $table->unsignedInteger('projet_id')->default(1);
+            $table->string('destNom');
+            $table->string('destEmail');
+            $table->string('destAdd');
+            $table->string('destTel');
+            $table->unsignedInteger('destId');
+            $table->boolean('destAssujetiTVA');
+            $table->string('basDePage');
             $table->unsignedInteger('addedBy');
             $table->timestamps();
         });
@@ -33,6 +34,6 @@ class CreateTachesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('taches');
+        Schema::dropIfExists('draft_factures');
     }
 }

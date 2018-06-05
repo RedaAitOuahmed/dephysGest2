@@ -17,9 +17,10 @@ class CreateFichiersTable extends Migration
             $table->increments('id');
             $table->string('nom');
             $table->string('chemin');
-            $table->integer('addedBy');
-            $table->foreign('tache_id')->references('id')->on('taches')->onDelete('cascade');
+            $table->unsignedInteger('addedBy');
+            $table->unsignedInteger('tache_id');
             $table->timestamps();
+            
         });
 
         

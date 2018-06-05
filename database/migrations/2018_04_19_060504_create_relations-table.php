@@ -15,7 +15,7 @@ class CreateRelationsTable extends Migration
     {
         Schema::create('relations', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('contact_id');
+            $table->unsignedInteger('contact_id');
             $table->enum('relation',['client','fournisseur','prospect','collegue']);
             $table->timestamps();
         });

@@ -15,8 +15,8 @@ class CreateFournisseursProduitsTable extends Migration
     {
         Schema::create('fournisseurs_produits', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('produit_id');
-            $table->integer('fournisseur_id');
+            $table->unsignedInteger('produit_id');
+            $table->unsignedInteger('fournisseur_id');
             $table->float('prixAchat')->nullable();
             $table->timestamps();
         });

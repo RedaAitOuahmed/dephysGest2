@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDocumentsTable extends Migration
+class CreateDevisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,17 @@ class CreateDocumentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('documents', function (Blueprint $table) {
+        Schema::create('devis', function (Blueprint $table) {
             $table->increments('id');
-            $table->float('montantTTC');
-            $table->float('montantHT');
-            
+            $table->string('statut');
+            $table->string('destNom');
+            $table->string('destEmail');
+            $table->string('destAdd');
+            $table->string('destTel');
+            $table->unsignedInteger('destId');
+            $table->boolean('destAssujetiTVA');
             $table->string('basDePage');
-
-            //Relation attributes
-            $table->integer('contact_id');
-            $table->integer('addedBy');
-
-            $table->string('documentable_type');
-            $table->string('documentable_id');
-            
-
+            $table->unsignedInteger('addedBy');
             $table->timestamps();
         });
     }
@@ -39,6 +35,6 @@ class CreateDocumentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('documents');
+        Schema::dropIfExists('devis');
     }
 }
