@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use \App\Facture;
 use \App\DocumentEntry;
 use Auth;
-use \App\Http\Resources\FactureResouce;
+use \App\Http\Resources\FactureResource;
 
 
 class FactureController extends Controller
@@ -36,17 +36,66 @@ class FactureController extends Controller
      */
     public function save(Request $request)
     {
-        //TODO VALIDATION
-        $fact = new Facture($request->all());
+        $this->validate($request,[
+            'entries' => 'required',
+            'entries.*.prixVente' =>"required|numeric|min:0",
+            'entries.*.prixAchat' =>"numeric|min:0",
+            'entries.*.quantiteLivree'=>"numeric|min:0",
+            'entries.*.produit_id'=> [function ($attribute, $value, $fail) {
+                if (! \App\Produit::find($value)) {
+                    $fail(':attribute is an invalid Produit id !');
+                }
+            }],
+            'entries.*.enrgNouveauProduit' => 'boolean',           
+            'destNom'=> 'required',
+            'destEmail' => 'email',
+            'destAssujetiTVA' => 'boolean|required',
+            'enrgNouveauClient' => 'boolean'
+        ]);
+        $fact = new Facture($request->except('entries'));
         $fact->addedBy = Auth::user()->id;
-        $fact->save();
+        $result = $fact->save();
+       
+        
         foreach($request->entries as $entry)
-        {
+        { 
+            if( ! \array_key_exists("produit_id",$entry) && array_key_exists("enrgNouveauProduit",$entry) && $entry['enrgNouveauProduit'])
+            {
+                $produit = new \App\Produit($entry);
+                $produit->estVendu = true;
+                $produit->addedBy =  Auth::user()->id;
+                $produit->save();
+                $produit->setFournisseurs([['prixAchat'=> $entry['prixAchat']]]);
+            }
             $line = new DocumentEntry($entry);
-            $line->addedBy = Auth::user()->id;
-            $fact->document_entries()->save($line);
+            if($produit)
+            {
+                $line->produit_id = $produit->id;
+            }
+            $results = $result && $fact->document_entries()->save($line);
+
+           
+        }
+        if( ! $request->destId && $request->enrgNouveauClient )
+        {
+            $contact = new \App\Contact();
+            $contact->nom = $request->destNom;
+            $contact->email = $request->destEmail;
+            $contact->adresse = $request->destAdd;
+            $contact->addedBy = Auth::user()->id;
+            $contact->save();
+            $contact->set_relations(['client']);
         }
 
+        if($result)
+        {
+            return response()->json([
+                'message' => 'Facture added successfully',
+                'id' => $fact->id,        
+            ]
+        ,200);
+        }
+        return response()->json(['message' => 'Internal Server Error'],500);
     }
 
     /**
@@ -70,7 +119,6 @@ class FactureController extends Controller
     /**
      * toggle abondonnee from true to false.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -80,6 +128,7 @@ class FactureController extends Controller
         if($fact)
         {
             $fact->abandonnee = ! $fact->abandonnee;
+            $fact->save();
             return response()->json(['message'=>'Facture updated'],200);
         }
         return response()->json(['message'=>'Facture not found'],404);

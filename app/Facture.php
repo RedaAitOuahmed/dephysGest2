@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Facture extends Model
 {
-    protected $guarded = ['created_at','updated_at','id'];
+    protected $fillable = ['destNom','destEmail','destAdd','destTel','destId','destAssujetiTVA','basDePage'];
     public function paiements()
     {
         return $this->morphMany('App\Paiement', 'document');

@@ -23,6 +23,8 @@ tags:
   description: "Everything about products (Les Produits)"
 - name: "categories"
   description: "Used to classify products (Les Produits)"
+- name: "factures"
+  description: "Everything about bills (Les Factures)"
 schemes:
 - "http"
 paths:
@@ -282,7 +284,6 @@ paths:
             description: "Invalid Operation : a fichier can be deleted only by the user who added it or a super user"
           500:
             description: "internal server error"
-  
   /fichiers/tache/{id}:
       get:
         tags:
@@ -560,8 +561,6 @@ paths:
               $ref: "#/definitions/Contact"
         422:
           description: "The given data was invalid"    
-  
-  
 
   /contacts:
       post:
@@ -821,8 +820,7 @@ paths:
           410:
             description: "Invalid Operation : can be deleted only by a super user or by the user who added this contact"
   
-  
-  
+
   /produits:
     post:
       tags:
@@ -1144,7 +1142,74 @@ paths:
             description: "Invalid Operation : only a super user and the user who created this project can delete it"
           500:
             description: "Internal server Error" 
-      
+
+
+  /factures:
+      post:
+        tags:
+        - "factures"
+        summary: "Add a new Facture"
+        description: ""
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+        - in: "body"
+          required: true
+          name: "entries"
+          schema:
+            $ref: "#/definitions/entries_param"
+        - in: "body"
+          required: true
+          name: "destNom"
+          type: 'string'
+        - in: 'body'
+          name: 'destEmail'
+          type: 'string'
+        - in: 'body'
+          name: 'destAdd'
+          type: 'string'
+        - in: 'body'
+          name: 'destAssujetiTVA'
+          required: true
+          type: 'boolean'
+        - in: 'body'
+          name: 'basDePage'
+          type: 'string'
+        - in: 'body'
+          name: 'enrgNouveauClient'
+          type: 'boolean'
+        responses:
+          422:
+            description: "Invalid input"
+          200:
+            description: "Facture added successfully"
+          500:
+            description: "Internal Server Error"
+      get:
+        tags:
+        - "factures"
+        summary: "get All categories"
+        produces:
+        - "application/json"
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema:
+              type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Facture"
+                links:
+                  $ref: "#/pagination/links"
+                meta:
+                  $ref: "#/pagination/meta"
+          404:
+            description: "No categorie found"
+
       
 pagination:
   links:
@@ -1180,6 +1245,27 @@ pagination:
     
 definitions:
 
+  entries_param:
+        type: 'array'
+        items:
+            type: 'object'
+            properties:
+              nom:
+                type: 'string'
+              TVA:
+                type: 'number'
+              prixAchat:
+                type: 'number'
+              prixVente:
+                type: 'number'
+              quantiteLivree:
+                type: 'number'
+              produit_id:
+                type: 'integer'
+              details:
+                type: 'string'
+              enrgNouveauProduit:
+                type: 'boolean'
   fournisseurs_param:
         type: 'array'
         items:
@@ -1372,6 +1458,54 @@ definitions:
         type: 'timestamp'
       updated_at:
         type: 'timestamp'
+  Facture:
+    type: 'object'
+    properties:
+      id:
+        type: 'integer'
+      abandonee:
+        type: 'boolean'
+      entries:
+        type: 'array'
+        items:
+          type: 'object'
+          properties:
+            id:
+              type: 'integer'
+            nom:
+              type: 'string'
+            TVA:
+              type: 'number'
+            prixAchat:
+              type: 'number'
+            prixVente:
+              type: 'number'
+            quantiteLivree:
+              type: 'number'
+            produit_id:
+              type: 'integer'
+            details:
+              type: 'string'  
+      destNom:
+        type: 'string'
+      destEmail:
+        type: 'string'
+      destAdd:
+        type: 'string'
+      destId:
+        type: 'integer'
+      destAssujetiTVA:
+        type: 'boolean'
+      basDePage:
+        type: 'string'
+      addedBy:
+        type: 'integer'
+      created_at:
+        type: 'timestamp'
+      updated_at:
+        type: 'timestamp'
+      
+
 parameters:
   relations:
         name: 'relations'

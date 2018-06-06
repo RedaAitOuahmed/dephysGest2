@@ -6,12 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class DocumentEntry extends Model
 {
+    protected $fillable=['nom','TVA','prixAchat','prixVente','quantiteLivree','produit_id','details'];
     public function document()
     {
         return $this->morphTo();
-    }
-    public function addedBy()
-    {
-        return $this->belongsTo('App\User','addedBy');
     }
 }

@@ -73,12 +73,19 @@ Route::prefix('produits')->group(function () {
     });
 
 
-    Route::prefix('categories')->group(function () {
+Route::prefix('categories')->group(function () {
         Route::post('/', 'CategorieController@save')->name('saveCategorie');
         Route::get('/', 'CategorieController@getAll')->name('getAllCategories');
         Route::put('/{id}','CategorieController@update')->name('updateCategorie');
         Route::get('/{id}','CategorieController@get')->name('getCategorie');
         Route::delete('/{id}','CategorieController@delete')->name('deleteCategorie');
        
+    });
+
+Route::prefix('factures')->group(function () {
+        Route::put('/toggleAbandonnee/{id}','FactureController@toggleAbandonnee')->name('toggleAbandonneeFacture');
+        Route::post('/', 'FactureController@save')->name('saveFacture');
+        Route::get('/', 'FactureController@getAll')->name('getAllFactures');
+        Route::get('/{id}','FactureController@get')->name('getFacture');
     });
 

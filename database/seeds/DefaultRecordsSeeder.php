@@ -14,6 +14,7 @@ class DefaultRecordsSeeder extends Seeder
         //default Fournisseur
         $fournisseur = new \App\Contact();
         $fournisseur->nom = "fournisseur par défaut";
+        $fournisseur->addedBy = 1;
         $fournisseur->save();
         $rel = new \App\Relation();
         $rel->relation = "fournisseur";
@@ -30,14 +31,14 @@ class DefaultRecordsSeeder extends Seeder
         $projet = new \App\Projet();
         $projet->nom = 'Libre';
         $projet->description = "Ce Projet contient toutes les tâches qui n'appartienent à aucun autre projet";
-        $projet->addedBy = null;
+        $projet->addedBy = 1;
         $projet->save();
 
         //default Categorie
         $categorie = new \App\Categorie();
         $categorie->nom = 'Libre';
         $categorie->description = "Cette Catégorie contient tous les produits qui n'appartienent à aucune autre catégorie";
-        $categorie->addedBy = null;
+        $categorie->addedBy = 1;
         $categorie->save();
                 
                 
