@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class FactureResource extends Resource
+class DocumentEntryResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -14,6 +14,6 @@ class FactureResource extends Resource
      */
     public function toArray($request)
     {
-        return \array_merge( parent::toArray($request), ["entries" => $this->getDocumentEntries()]);
+        return parent::toArray($request);
     }
 }

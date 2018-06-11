@@ -13,7 +13,7 @@ class ProduitResource extends Resource
      * @return array
      */
     public function toArray($request)
-    {
+    {        
         $addedBy_contactId = null;
         $usr = \App\User::find($this->addedBy);
         if($usr)
@@ -24,9 +24,9 @@ class ProduitResource extends Resource
             "id" => $this->id,
             "nom" => $this->nom,
             "codeBarre" => $this->codeBarre,
-            "prixAchat" => $this->prixAchat,
-            "prixVente" => $this->prixVente,
+            "prixVenteHT" => $this->prixVenteHT,
             "TVA" => $this->TVA,
+            "prixVenteTTC" => $this->prixVenteTTC,
             "addedBy" => $addedBy_contactId,
             "estAchete" => $this->estAchete,
             "estVendu" => $this->estVendu,

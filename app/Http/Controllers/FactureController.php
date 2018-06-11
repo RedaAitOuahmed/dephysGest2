@@ -38,8 +38,19 @@ class FactureController extends Controller
     {
         $this->validate($request,[
             'entries' => 'required',
-            'entries.*.prixVente' =>"required|numeric|min:0",
-            'entries.*.prixAchat' =>"numeric|min:0",
+            'entries.*.nom' => 'required',
+
+            'entries.*.TVA_achat' =>"numeric|min:0",
+            'entries.*.prixAchatHT' =>"numeric|min:0",
+            'entries.*.prixAchatTTC' =>"numeric|min:0",
+            
+            'entries.*.TVA_vente' =>"numeric|min:0|required_without:entries.*.prixVenteHT,entries.*.prixVenteTTC",
+            'entries.*.prixVenteHT' =>"numeric|min:0|required_without:entries.*.prixVenteTTC,entries.*.TVA_vente",
+            'entries.*.prixVenteTTC' =>"numeric|min:0|required_without:entries.*.prixVenteHT,entries.*.TVA_vente",
+            'entries.*.reduction' => "numeric|min:0",
+            'entries.*.reductionHT' => 'boolean|required_with:entries.*.reduction',
+            'entries.*.reductionParPourcentage' => 'boolean|required_with:entries.*.reduction',
+            'entries.*.quantite'=>"numeric|min:0",
             'entries.*.quantiteLivree'=>"numeric|min:0",
             'entries.*.produit_id'=> [function ($attribute, $value, $fail) {
                 if (! \App\Produit::find($value)) {
@@ -134,4 +145,72 @@ class FactureController extends Controller
         return response()->json(['message'=>'Facture not found'],404);
     }
 
+    /**
+     * Set quantite livree of a Facture entry
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function setLivraison(Request $request, $id)
+    {
+        $fact = Facture::find($id);
+        if($fact)
+        {
+            $this->validate($request,[
+                'entry_id' => ['required', function ($attribute, $value, $fail) use ($fact) {
+                    if( ! \App\DocumentEntry::find($value))
+                    {
+                        $fail(':attribute is an invalid DocumentEntry id !');   
+                    }else if (! $fact->document_entries->contains($value)) {
+                        $fail(':attribute does not belong to the Facture !');
+                    }
+                }],
+                'quantiteLivree'=>"required|numeric|min:0"
+            ]);
+
+            $entry = \App\DocumentEntry::find($request->entry_id);
+            $entry->quantiteLivree = $request->quantiteLivree;
+            if( $entry->save() )
+            {
+                return response()->json(['message'=>'Livraison added'],200);
+            }
+        }
+        return response()->json(['message'=>'Facture not found'],404);
+    }
+    /**
+     * get echeances of this Facture
+     * @param int id of Facture
+     */
+    public function getEcheances(int $id)
+    {
+        $fact = Facture::find($id);
+        if($fact)
+        {
+            return \App\Http\Resources\EcheanceResources::collection($fact->echeances);
+        }
+        return response()->json(['message'=>'Facture not found'],404);
+    }
+
+    /**
+     * set echeances of a Facturee
+     * @param Request
+     * @param int id of Facture
+     */
+    public function setEcheances(Request $request, int $id)
+    {
+        $fact = Facture::find($id);
+        if($fact)
+        {
+            $this->validate($request,[
+                'startDate' => 'required|date|after_or_equal:today',
+                'divideBy' => 'integer|min:1',
+                'each' => 'required_with:devideBy|integer|min:1'
+            ]);
+
+            
+        }
+
+        return response()->json(['message'=>'Facture not found'],404);
+
+    }
 }

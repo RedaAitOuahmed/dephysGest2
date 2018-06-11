@@ -17,7 +17,9 @@ class CreateFournisseursProduitsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('produit_id');
             $table->unsignedInteger('fournisseur_id');
-            $table->float('prixAchat')->nullable();
+            $table->float('prixAchatHT')->nullable();
+            $table->float('TVA_achat')->nullable();
+            $table->float('prixAchatTTC')->nullable();
             $table->timestamps();
         });
     }

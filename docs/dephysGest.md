@@ -95,9 +95,17 @@ Admin
 Architecture 
 Problème d’héritage
 
-  - Type some Markdown on the left
-  - See HTML in the right
-  - Magic
+# Factures
+
+* Une réduction se fait techniquement sur le prix HT, mais on devrait quand même laisser la possibilité à l'utilisateur de faire une réduction sur le montant total, par pourcentage ou par un montant (on s'occupera de calculer le HT en back-end)
+* Les écheances d'une facture ne doivent pas être modifiées.
+* Les écheances doivent être par mois ( ex chaque 1er du mois)
+
+## Modélisation d'une réduction sur un produit (DocumentEntry) ou sur la somme totale d'un document
+On modélise la réduction sur un prooduit (resp un document) par 3 informations : 
+* ``double reduction`` : indique le taux de réduction
+* ``boolean reductionHT``: vrai si la réduction dois s'appliquer sur le prix HT de ce produit (resp de ce document), faux si elle doit s'appliquer sur le prix TTC du produit (resp du document).
+* ``boolean reductionParPourcentage`` : vrai si la réducton est un pourcentage, faux si la réduction est un montant à déduire.
 
 # New Features!
 

@@ -83,6 +83,7 @@ Route::prefix('categories')->group(function () {
     });
 
 Route::prefix('factures')->group(function () {
+        route::put('/setLivraison/{id}', 'FactureController@setLivraison')->name('setLivraisonFacture');
         Route::put('/toggleAbandonnee/{id}','FactureController@toggleAbandonnee')->name('toggleAbandonneeFacture');
         Route::post('/', 'FactureController@save')->name('saveFacture');
         Route::get('/', 'FactureController@getAll')->name('getAllFactures');

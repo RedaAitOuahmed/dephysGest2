@@ -818,7 +818,8 @@ paths:
           404:
             description: "Contact not found"
           410:
-            description: "Invalid Operation : can be deleted only by a super user or by the user who added this contact"
+            description: "Invalid Operation : can be deleted only by a super user 
+            or by the user who added this contact"
   
 
   /produits:
@@ -826,6 +827,23 @@ paths:
       tags:
       - "produits"
       summary: "Add a new Produit"
+      description: "## Notes about some parameters:
+      - __prixVenteHT, prixVenteTTC, TVA__
+      For these parameters only two should be provided, so that consistency and integrity of the information is preserved.   
+            
+      - __fournisseurs__
+      Many Fournisseurs can be set for a product. the data for each Fournisseur should represent 
+      an element of the fournisseurs array parameter.
+
+      For the fournisseurs array parameter : 
+            * if an element has the 'id' key equal to a valid Contact id 
+      then this contact is added directly as a Fournisseur for this produit.
+            * if an element has no 'id' key but has a 'nom' key, then a new Contact is added and is set
+        as the fournisseur of this Produit, also a Tache is automatically added for the current user
+        to add informations about this newly created Contact
+            * if an element has neither an 'id' nor a 'nom' key and has at least one of these keys 
+        'prixAchatHT', 'prixAchatTTC', 'TVA_achat' then we set the default Fournisseur 
+        (a contact aleready created) as its Fournisseur"
       consumes:
       - "application/json"
       produces:
@@ -841,7 +859,13 @@ paths:
         type: 'string'
         description: 'needs to be unique for each Produit'
       - in: 'body'
-        name: 'prixVente'
+        name: 'prixVenteHT'
+        type: 'number'
+      - in: 'body'
+        name: 'TVA'
+        type: 'number'
+      - in: 'body'
+        name: 'prixVenteTTC'
         type: 'number'
       - in: 'body'
         name: 'estAchete'
@@ -1175,6 +1199,9 @@ paths:
           required: true
           type: 'boolean'
         - in: 'body'
+          name: 'destNumTVA'
+          type: 'boolean'
+        - in: 'body'
           name: 'basDePage'
           type: 'string'
         - in: 'body'
@@ -1209,8 +1236,70 @@ paths:
                   $ref: "#/pagination/meta"
           404:
             description: "No categorie found"
-
-      
+  /factures/{id}:
+      get:
+        tags:
+        - "factures"
+        summary: "get an existing Facture by id"
+        description: ""
+        produces:
+        - "application/json"
+        parameters:
+        - in: "path"
+          name: "id"
+          type: "integer"
+          required: true
+          
+        responses:
+          200:
+            description : "Succeded Operation"
+            schema :
+              $ref : "#/definitions/Facture"
+          400:
+            description: "Invalid ID supplied"
+          404:
+            description: "Facture not found"
+  /factures/setLivraison/{id}:
+      put:
+        tags:
+            - "factures"
+        summary: "update the quantiteLivree for an entry of this Facture"
+        parameters:
+        - in: "path"
+          name: "id"
+          type: "integer"
+          description: "if of the Facture"
+          required: true
+        - in: "body"
+          name: "entry_id"
+          type: "integer"
+          required: true
+          description: "id of the entry"
+        - in: "body"
+          name: "quantiteLivree"
+          type: "number"
+          required: true
+        responses:
+          200:
+            description: "Facture updated"
+          404:
+            description: "Facture not found"
+  /factures/toggleAbandonnee/{id}:
+      put:
+        tags:
+        - "factures"
+        summary: "toggle the \"abandonnée\" state for this Facture between true and false"
+        parameters:
+        - in: "path"
+          name: "id"
+          type: "integer"
+          description: "if of the Facture"
+          required: true
+        responses:
+            200:
+              description: "Facture updated"
+            404:
+              description: "Facture not found"
 pagination:
   links:
     type: 'object'
@@ -1247,16 +1336,33 @@ definitions:
 
   entries_param:
         type: 'array'
+        description: 'from prixAchatHT, prixAchatTTC, TVA_achat only 2 arguments are enough,
+        same goes for prixVenteHT, prixVenteTTC, TVA_vente'
         items:
             type: 'object'
             properties:
               nom:
                 type: 'string'
-              TVA:
+              TVA_achat:
                 type: 'number'
-              prixAchat:
+              prixAchatHT:
                 type: 'number'
-              prixVente:
+              prixAchatTTC:
+                type: 'number'
+              TVA_vente:
+                type: 'number'
+              prixVenteHT:
+                type: 'number'
+              prixVenteTTC:
+                type: 'number'
+              reduction:
+                type: 'number'
+                description: 'Discount on the price of each unit'
+              reductionHT:
+                type: 'boolean'
+              reductionParPourcentage:
+                type: 'boolean'
+              quantite:
                 type: 'number'
               quantiteLivree:
                 type: 'number'
@@ -1277,10 +1383,16 @@ definitions:
             nom:
               type: "string"
               description: "name of a new  contact that will be created. WARNING : will not be taken into consideration if id is not null"
-            prixAchat:
+            prixAchatHT:
               type: "number"
-              description: "buying price of this Produit from this Fournisseur"
-        
+              description: "buying HT (Hors Taxes) price of this Produit from this Fournisseur"
+            prixAchatTTC:
+              type: "number"
+              description: "buying TTC (toute taxe comprise) price of this Produit from this Fournisseur"
+            TVA_achat:
+              type: "number"
+              description: "TVA when buying this Produit from this Fournisseur"
+
   Relations:
         type: "array"
         items:
@@ -1450,9 +1562,15 @@ definitions:
             id:
               type: 'integer'
               description: 'contact id of Fournisseur'
-            prixAchat:
-              description: buying price of the product from this Fournisseur
-              type: number
+            prixAchatHT:
+              type: "number"
+              description: "buying HT (Hors Taxes) price of this Produit from this Fournisseur"
+            prixAchatTTC:
+              type: "number"
+              description: "buying TTC (toute taxe comprise) price of this Produit from this Fournisseur"
+            TVA_achat:
+              type: "number"
+              description: "TVA when buying this Produit from this Fournisseur"
             
       created_at:
         type: 'timestamp'
@@ -1474,12 +1592,32 @@ definitions:
               type: 'integer'
             nom:
               type: 'string'
-            TVA:
+            TVA_vente:
               type: 'number'
-            prixAchat:
+            prixAchatHT:
               type: 'number'
-            prixVente:
+            prixAchatTTC:
               type: 'number'
+            prixVenteHT:
+              type: 'number'
+            prixVenteTTC:
+              type: 'number'
+            reduction:
+              type: 'number'
+            typeReduction:
+              type: 'string'
+              enum:
+                - '%'
+                - '€'
+            reductionSur:
+              type: 'string'
+              enum:
+                - 'HT'
+                - 'TTC'
+            quantite:
+              type: 'number'
+            unite:
+              type: 'string'
             quantiteLivree:
               type: 'number'
             produit_id:
@@ -1496,6 +1634,20 @@ definitions:
         type: 'integer'
       destAssujetiTVA:
         type: 'boolean'
+      destNumTVA:
+        type: 'string'
+      reduction:
+              type: 'number'
+      typeReduction:
+        type: 'string'
+        enum:
+          - '%'
+          - '€'
+      reductionSur:
+        type: 'string'
+        enum:
+          - 'HT'
+          - 'TTC'
       basDePage:
         type: 'string'
       addedBy:

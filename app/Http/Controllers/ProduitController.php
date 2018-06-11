@@ -33,9 +33,9 @@ class ProduitController extends Controller
     private function validateRequest(Request $request)
     {
         $this->validate($request,[
-            'prixAchat' => 'numeric|min:0',
-            'prixVente' => 'numeric|min:0',
+            'prixVenteHT' => 'numeric|min:0',
             'TVA' => 'numeric|min:0',
+            'prixVenteTTC' => 'numeric|min:0',
             'estAchete' => 'boolean',
             'estVendu' => 'boolean',
             'categorie_id' => [function ($attribute, $value, $fail) {
@@ -48,6 +48,9 @@ class ProduitController extends Controller
                     $fail(':attribute is an invalid Contact id !');
                 }
             }],
+            'fournisseurs.*.prixAchatHT' => 'numeric|min:0',
+            'fournisseurs.*.TVA_achat' => 'numeric|min:0',
+            'fournisseurs.*.prixAchatTTC' => 'numeric|min:0',
         ]);
 
     }

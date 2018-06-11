@@ -22,6 +22,16 @@ class CreateDevisTable extends Migration
             $table->string('destTel');
             $table->unsignedInteger('destId');
             $table->boolean('destAssujetiTVA');
+            $table->string('destNumTVA');
+            $table->double('reduction'); // indique le taux de réduction
+            $table->boolean('reductionHT'); 
+            /*vrai si la réduction dois s'appliquer sur le somme HT du devis, 
+            faux si elle doit s'appliquer sur la somme TTC dui devis.
+            */
+            $table->boolean('reductionParPourcentage');
+            /*
+            vrai si la réducton est un pourcentage, faux si la réduction est un montant à déduire.
+            */
             $table->string('basDePage');
             $table->unsignedInteger('addedBy');
             $table->timestamps();

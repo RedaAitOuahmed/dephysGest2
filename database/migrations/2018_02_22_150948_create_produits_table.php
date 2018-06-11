@@ -17,9 +17,9 @@ class CreateProduitsTable extends Migration
             $table->increments('id');
             $table->string('nom')->nullable();
             $table->string('codeBarre')->nullable();
-            $table->double('prixAchat')->nullable();
-            $table->double('prixVente')->nullable();
+            $table->double('prixVenteHT')->nullable();
             $table->float('TVA')->nullable();
+            $table->double('prixVenteTTC')->nullable();
             $table->integer('addedBy');
             $table->boolean('estAchete')->nullable();
             $table->boolean('estVendu')->nullable();
