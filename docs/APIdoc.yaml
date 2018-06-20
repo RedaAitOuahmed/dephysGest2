@@ -840,7 +840,7 @@ paths:
       then this contact is added directly as a Fournisseur for this produit.
             * if an element has no 'id' key but has a 'nom' key, then a new Contact is added and is set
         as the fournisseur of this Produit, also a Tache is automatically added for the current user
-        to add informations about this newly created Contact
+        to add information about this newly created Contact
             * if an element has neither an 'id' nor a 'nom' key and has at least one of these keys 
         'prixAchatHT', 'prixAchatTTC', 'TVA_achat' then we set the default Fournisseur 
         (a contact aleready created) as its Fournisseur"
@@ -1173,7 +1173,10 @@ paths:
         tags:
         - "factures"
         summary: "Add a new Facture"
-        description: ""
+        description: "
+        __This end point allows the user to create a Facture.__
+        To do so the user needs to provide information about the reciever of this Facture.
+        "
         consumes:
         - "application/json"
         produces:
@@ -1182,31 +1185,59 @@ paths:
         - in: "body"
           required: true
           name: "entries"
+          description: "Represents the lines of the document, check the Model instead of Example Value for more details"
           schema:
             $ref: "#/definitions/entries_param"
         - in: "body"
           required: true
           name: "destNom"
           type: 'string'
+          description: "Name of the recepient"
         - in: 'body'
           name: 'destEmail'
           type: 'string'
+          description: 'Email of the recepient'
         - in: 'body'
           name: 'destAdd'
           type: 'string'
+          description: "Address of the recepeient"
         - in: 'body'
           name: 'destAssujetiTVA'
           required: true
           type: 'boolean'
+          description: "Whether TVA is applicable to the recepient or not"
         - in: 'body'
           name: 'destNumTVA'
           type: 'boolean'
+          description: "TVA reference of the recepient (numéro TVA)"
         - in: 'body'
-          name: 'basDePage'
-          type: 'string'
+          name: 'destId'
+          type: 'integer'
+          description: 'Contact id (if the reciever is a contact that already exists in the database)'
         - in: 'body'
           name: 'enrgNouveauClient'
           type: 'boolean'
+          description: "To indicate whether the recepient should be saved as a new contact or not. 
+          __It is taken into consideration only if destId is not provided__ "
+        - in: 'body'
+          name: 'reduction'
+          type: 'number'
+          description: 'Discount on the totalt price of the document'
+        - in: 'body'
+          name: 'reductionHT'
+          type: 'boolean'
+          description: 'Indicates whether the discount should be calculated on the HT price or on the TTC price
+          __required: if reduction is present__'
+        - in: 'body'
+          name: 'reductionParPourcentage'
+          type: 'boolean'
+          description: "Indicates whether the discount should be calculated as a percentage or as an amount
+          __required: if reduction is present__"
+        
+        - in: 'body'
+          name: 'basDePage'
+          type: 'string'
+          description: "Details about the bill that should be added at the end of the document"
         responses:
           422:
             description: "Invalid input"
@@ -1336,21 +1367,26 @@ definitions:
 
   entries_param:
         type: 'array'
-        description: 'from prixAchatHT, prixAchatTTC, TVA_achat only 2 arguments are enough,
-        same goes for prixVenteHT, prixVenteTTC, TVA_vente'
+        description: 'From the following parameters : **prixAchatHT**, **prixAchatTTC**, **TVA_achat** only 2 parameters should be provided,
+        so that the data is consistent. The same goes for **prixVenteHT**, **prixVenteTTC**, **TVA_vente**'
         items:
             type: 'object'
             properties:
               nom:
                 type: 'string'
+                description: "Name of the product"
               TVA_achat:
                 type: 'number'
+                description: "The applied TVA on this product when it was bought"
+                required: true
               prixAchatHT:
                 type: 'number'
               prixAchatTTC:
                 type: 'number'
+                condition: 'greater or equal to prixAchatHT'
               TVA_vente:
                 type: 'number'
+                description: "The applied TVA on this product, in this document"
               prixVenteHT:
                 type: 'number'
               prixVenteTTC:
@@ -1360,18 +1396,28 @@ definitions:
                 description: 'Discount on the price of each unit'
               reductionHT:
                 type: 'boolean'
+                description: 'Indicates whether the discount should be calculated on the HT price or on the TTC price'
+                required: "if reduction is present"
               reductionParPourcentage:
                 type: 'boolean'
+                description: "Indicates whether the discount should be calculated as a percentage or as an amount"
               quantite:
                 type: 'number'
+                required: 'false'
+                default: 1.00
               quantiteLivree:
                 type: 'number'
+                condition: "Less or equal to quantite"
+                default: 0.00
               produit_id:
                 type: 'integer'
               details:
                 type: 'string'
               enrgNouveauProduit:
                 type: 'boolean'
+                description: "To indicate whether the entry should be saved as a new Produit or not. 
+                __It is taken into consideration only if produit_id is not provided__ "
+
   fournisseurs_param:
         type: 'array'
         items:
@@ -1614,6 +1660,12 @@ definitions:
               enum:
                 - 'HT'
                 - 'TTC'
+            prixVenteHT_apresReduction:
+              type: 'number'
+              description: 'Available only when reduction is greater than 0'
+            prixVenteTTC_apresReduction:
+              type: 'number'
+              description: 'Available only when reduction is greater than 0'
             quantite:
               type: 'number'
             unite:
@@ -1636,8 +1688,12 @@ definitions:
         type: 'boolean'
       destNumTVA:
         type: 'string'
+      prixVenteHT:
+        type: 'number'
+      prixVenteTTC:
+        type: 'number'
       reduction:
-              type: 'number'
+        type: 'number'
       typeReduction:
         type: 'string'
         enum:
@@ -1648,6 +1704,10 @@ definitions:
         enum:
           - 'HT'
           - 'TTC'
+      prixVenteHT_apresReduction:
+        type: 'number'
+      prixVenteTTC_apresReduction:
+        type: 'number'
       basDePage:
         type: 'string'
       addedBy:

@@ -20,7 +20,9 @@ class CreateDocumentEntriesTable extends Migration
             $table->double('prixVenteHT');
             $table->float('TVA_achat');
             $table->double('prixAchatHT');
-            $table->double('reduction'); // indique le taux de réduction
+            $table->double('prixAchatTTC');
+            $table->double('reduction');
+            // indique le taux de réduction
             $table->boolean('reductionHT'); 
             /*vrai si la réduction dois s'appliquer sur le prix de vente HT de ce produit, 
             faux si elle doit s'appliquer sur le prix de vente TTC du produit.
@@ -30,7 +32,7 @@ class CreateDocumentEntriesTable extends Migration
             vrai si la réducton est un pourcentage, faux si la réduction est un montant à déduire.
             */
             $table->double('quantite')->default(1.00);
-            $table->double('quantiteLivree');
+            $table->double('quantiteLivree')->default(0.00);
             $table->string('unite'); // kgs ou pieces ou ...
             $table->unsignedInteger('document_id');
             $table->string('document_type');

@@ -23,12 +23,12 @@ class CreateFacturesTable extends Migration
             $table->unsignedInteger('destId');
             $table->boolean('destAssujetiTVA');
             $table->string('destNumTVA');
-            $table->double('reduction'); // indique le taux de réduction
-            $table->boolean('reductionHT'); 
+            $table->double('reduction')->default(0); // indique le taux de réduction
+            $table->boolean('reductionHT')->default(true); 
             /*vrai si la réduction dois s'appliquer sur le somme HT de la facture, 
             faux si elle doit s'appliquer sur la somme TTC de la facture.
             */
-            $table->boolean('reductionParPourcentage');
+            $table->boolean('reductionParPourcentage')->default(false);
             /*
             vrai si la réducton est un pourcentage, faux si la réduction est un montant à déduire.
             */

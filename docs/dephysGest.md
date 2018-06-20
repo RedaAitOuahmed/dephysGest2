@@ -101,6 +101,13 @@ Problème d’héritage
 * Les écheances d'une facture ne doivent pas être modifiées.
 * Les écheances doivent être par mois ( ex chaque 1er du mois)
 
+### Notes
+J'ai ajouté une règle de validation 
+```php 
+    "array.*.objectField_A: greater_than_or_equal_field:array.*.objectField_B" 
+```
+Qui vérifie pour chaque objet contenu dans le tableau (array), si objectField_A >= objectField_B. Dans le cas où 'objectField_B' n'existe pas dans l'objet, c'est validé automatiquement.
+Le code pour cette règle se trouve dans : `app\Providers\AppServiceProvider.php`
 ## Modélisation d'une réduction sur un produit (DocumentEntry) ou sur la somme totale d'un document
 On modélise la réduction sur un prooduit (resp un document) par 3 informations : 
 * ``double reduction`` : indique le taux de réduction

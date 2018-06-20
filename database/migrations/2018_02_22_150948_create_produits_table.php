@@ -24,7 +24,7 @@ class CreateProduitsTable extends Migration
             $table->boolean('estAchete')->nullable();
             $table->boolean('estVendu')->nullable();
             $table->string('description')->nullable();
-            $table->unsignedInteger('categorie_id');
+            $table->unsignedInteger('categorie_id')->default(1);
             $table->timestamps();
         });
     }

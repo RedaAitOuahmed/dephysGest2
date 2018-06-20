@@ -126,36 +126,5 @@ class Produit extends Model
             }
         }
     }
-    /**
-     * @param double prixHT
-     * @param double prixTTC
-     * @param double TVA
-     * based on two of these arguments the function calculates prixHT and TVA that should be 
-     * @return StdClass an object containing the prixHT and TVA
-     * @return NULL if only one argument is non null
-     */
-
-    public static function getPrice_HT_TVA($prixHT = null, $prixTTC = null, $TVA = null)
-    {
-        $obj = new \StdClass();
-        if($prixHT && $TVA)
-        {
-            $obj->prixHT = $prixHT;
-            $obj->TVA = $TVA;
-            return $obj;
-        }
-        if($prixTTC && $prixHT)
-        {
-            $obj->prixHT = $prixHT;
-            $obj->TVA = ($prixTTC-$prixHT)/$prixHT * 100; 
-            return $obj;  
-        }
-        if($prixTTC && $TVA)
-        {
-            $obj->prixHT = $prixTTC / ($TVA/100 + 1);
-            $obj->TVA = $TVA;
-            return $obj;
-        }
-        return null;
-    }
+    
 }
