@@ -108,11 +108,49 @@ J'ai ajouté une règle de validation
 ```
 Qui vérifie pour chaque objet contenu dans le tableau (array), si objectField_A >= objectField_B. Dans le cas où 'objectField_B' n'existe pas dans l'objet, c'est validé automatiquement.
 Le code pour cette règle se trouve dans : `app\Providers\AppServiceProvider.php`
+
 ## Modélisation d'une réduction sur un produit (DocumentEntry) ou sur la somme totale d'un document
 On modélise la réduction sur un prooduit (resp un document) par 3 informations : 
 * ``double reduction`` : indique le taux de réduction
 * ``boolean reductionHT``: vrai si la réduction dois s'appliquer sur le prix HT de ce produit (resp de ce document), faux si elle doit s'appliquer sur le prix TTC du produit (resp du document).
 * ``boolean reductionParPourcentage`` : vrai si la réducton est un pourcentage, faux si la réduction est un montant à déduire.
+
+## Gestion des réductions
+### Réductions invalides
+* Si une réduction sur un produit est supérieur au prix du produit alors la création de la facture ne se fait pas.
+* Si une réduction sur la totalité de la facture est supérieur au montant de la facture alors cette dernière n'est pas créée.
+### Réduction sur la totalilté d'une facture avec des taux TVA différents
+Appliquer une réduction sur la totalité d'une facture avec des taux TVA différents peut être compliqué, exemple :
+| Produit                 | Prix HT        | TVA   | Prix TTC  |
+| ----------------------- |:---------------| :-----|:----------|
+| **1 x** Pizza 4-Fromages| 10.00 €        | 10%   | 11.00 €   | 
+| **1 x** Tacos           | 05.00 €        | 10%   | 05.50 €   |
+| **1 x** Coca Zero 1L    | 03.00 €        | 20%   | 03.60 €   |
+| **Total**               | 18.00 €        |  --   | 20.10 €   |
+
+Si on voudrait appliquer une réduction de 5€ sur la valeur totale HT de la facture, on ne pourrait pas déduire cette reduction directement du prix total HT, car on ne saurait plus comment calculer le prix total TTC du fait qu'on saurait pas quel taux de TVA appliquer.
+
+
+#### Solution
+Il faut grouper les produits par taux de TVA comme ceci:
+| Groupes                 | Prix HT        | valeur TVA| Prix TTC  |
+| ----------------------- |:---------------| :---------|:----------|
+| TVA 10%                 | 15.00 €        | 01.50 €   | 16.50 €   | 
+| TVA 20%                 | 03.00 €        | 00.60 €   | 03.60 €   |
+| **Total**               | 18.00 €        |  --       | 20.10 €   |
+
+De là on applique la réduction sur les groupes de TVA, Si le montant de la réduction dépasse la valeur du premier groupe, alors on applique ce qu'il reste de la réduction sur le prochain groupe et ainsi de suite, comme ceci:
+| Groupes                 | Prix HT        | valeur TVA| Prix TTC  |
+| ----------------------- |:---------------| :---------|:----------|
+| Reduction Totale HT     | 05.00 €        | --        | --        |
+| TVA 10%                 | 15.00 €        | --        | --        |
+| ---Avec Réduction       | 10.00 €        | 01.00 €   | 11.00 €   |
+| TVA 20%                 | 03.00 €        | 00.60 €   | 03.60 €   |
+| ---Pas de Réduction     | --             | --        | --        |
+| **Total**               | 18.00 €        |  --       | 14.60 €   |
+
+#### Remarques:
+Si on applique une réduction sur le montant HT (resp le montant TTC) sur une facture avec des produits ayants des taux TVA différents, alors on ne peut pas prédire le montant TTC (resp le montant HT) de la facture, car cela dépend des groupes (de produits, groupés par taux de TVA) sur les quels va être appliquée la réduction.
 
 # New Features!
 

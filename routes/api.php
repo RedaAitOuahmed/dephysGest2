@@ -83,10 +83,13 @@ Route::prefix('categories')->group(function () {
     });
 
 Route::prefix('factures')->group(function () {
+        route::get('/getPaiements/{id}', 'FactureController@getPaiements')->name('getPaiementFacture');
+        route::put('/setPaiement/{id}', 'FactureController@setPaiement')->name('setPaiementFacture');
+        route::get('/getEcheances/{id}', 'FactureController@getEcheances')->name('getEcheancesFacture');
+        route::put('/setEcheances/{id}', 'FactureController@setEcheances')->name('setEcheancesFacture');
         route::put('/setLivraison/{id}', 'FactureController@setLivraison')->name('setLivraisonFacture');
         Route::put('/toggleAbandonnee/{id}','FactureController@toggleAbandonnee')->name('toggleAbandonneeFacture');
         Route::post('/', 'FactureController@save')->name('saveFacture');
         Route::get('/', 'FactureController@getAll')->name('getAllFactures');
         Route::get('/{id}','FactureController@get')->name('getFacture');
     });
-

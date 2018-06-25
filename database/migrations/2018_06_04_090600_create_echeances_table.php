@@ -15,7 +15,7 @@ class CreateEcheancesTable extends Migration
     {
         Schema::create('echeances', function (Blueprint $table) {
             $table->increments('id');
-            $table->double('sommePayee');
+            $table->double('sommePayee')->default(0.00);
             $table->double('sommeRestante');
             $table->date('dueDate');
             $table->unsignedInteger('addedBy');

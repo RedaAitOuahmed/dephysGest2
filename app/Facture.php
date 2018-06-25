@@ -38,30 +38,34 @@ class Facture extends Model
      * of the bill isn't TVA applicable (non assujeti à la tva)
      */
 
-    // public function getAmount()
-    // {
-    //     $amount = new \StdClass();
-    //     $amount->TTC = 0;
-    //     $amount->HT = 0;
-    //     if($this->destAssujetiTVA)
-    //     {
-    //         foreach($this->document_entries as $product)
-    //         {
-    //             $amount->TTC += (1+($product->TVA_vente/100)) * $product->prixVenteHT;
-    //             $amount->HT +=  $product->prixVenteHT;
-    //         }
-    //     }else
-    //     {
-    //         foreach($this->document_entries as $product)
-    //         {
-    //             $amount->HT +=  $product->prixVenteHT;
-    //         }
-    //         $amount->TTC += $amount->HT;
-            
-    //     }
-    //     return $amount;
-    // }
+    /**
+     * get already paid amount of this Facture
+     */
+    public function getSommePayeeAttribute()
+    {
+        $sommePayee = 0;
+        foreach($this->paiements as $paiement)
+        {
+            $sommePayee += $paiement->sommePayee;
+        }
+        return $sommePayee;
+    }
 
+    /**
+     * get amount that is yet to be paid of this Facture
+     */
+    public function getSommeRestanteAttribute()
+    {
+        return $this->PrixVenteTTC_apresReduction - $this->sommePayee;
+    }
+
+    /**
+     * get first unpaid echeance
+     */
+    public function getEcheanceNonPayeeAttribute()
+    {
+        return $this->echeances()->where('sommeRestante','>','0')->orderBy('dueDate')->first();
+    }
 
     /**
      * get total price HT of the Facture after the discount on each product is applied and before the application of the total discount.
@@ -77,6 +81,7 @@ class Facture extends Model
        }
        return $HT;
     }
+  
  
      /**
      * get total price TTC of the Facture after the discount on each product is applied and before the application of the total discount.

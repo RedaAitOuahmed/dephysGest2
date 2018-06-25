@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use \App\Facture;
 use \App\DocumentEntry;
+use \App\Echeance;
 use Auth;
 use \App\Http\Resources\FactureResource;
+use \Carbon\Carbon as Carbon;
+
 
 
 class FactureController extends Controller
@@ -90,7 +93,7 @@ class FactureController extends Controller
         // it validates that the reduction isn't greater than the value of the Facture
         if($request->reduction)
         {
-            // we create a Facture instance just for testing
+            // we create a Facture instance without saving to the database, it's just for testing
             $potentialFacture = new Facture($request->except('entries'));
             // we then create an array of the document_entries 
             // because we can't save them and use the relationship, so we manually add them to the Facture model
@@ -123,11 +126,6 @@ class FactureController extends Controller
             }
         }
         
-        
-
-
-
-
 
         $fact = new Facture($request->except('entries'));
         $fact->addedBy = Auth::user()->id;
@@ -264,7 +262,7 @@ class FactureController extends Controller
         $fact = Facture::find($id);
         if($fact)
         {
-            return \App\Http\Resources\EcheanceResources::collection($fact->echeances);
+            return \App\Http\Resources\EcheanceResource::collection($fact->echeances);
         }
         return response()->json(['message'=>'Facture not found'],404);
     }
@@ -277,18 +275,143 @@ class FactureController extends Controller
     public function setEcheances(Request $request, int $id)
     {
         $fact = Facture::find($id);
-        if($fact)
+        if($fact && count($fact->echeances))
+        {
+            // in case this document already has echeances
+            return response()->json(['message'=>'Invalid Operation: This Facture already has Echeances'],422);
+        }else if($fact)
         {
             $this->validate($request,[
-                'startDate' => 'required|date|after_or_equal:today',
-                'divideBy' => 'integer|min:1',
-                'each' => 'required_with:devideBy|integer|min:1'
+                'monthStartPaying' => 'required_without_all:payingDate,monthEndPaying|boolean',
+                'monthEndPaying' => 'required_without_all:payingDate,monthStartPaying|boolean',
+                'payingDate' => 'date|after_or_equal:today|required_without_all:monthStartPaying,monthEndPaying',
+                'dividedBy' => 'required|integer|min:1'
             ]);
 
-            
+                $dividedBy = $request->dividedBy ? $request->dividedBy : 1;
+                $pricePerEcheance = $fact->prixVenteTTC_apresReduction / $dividedBy;
+                //setting the first paymzent date
+                if($request->monthStartPaying)
+                { 
+                    //case where payments have to be on the start of every month
+                    
+                    $dueDatePerEcheance = Carbon::now();
+                    //we first check if we're it's the first day of the month, if it's the case we use it as the first date for payments
+                    //else we set the first day of the next month as the start date for payments
+                    if($dueDatePerEcheance->day > 1)
+                    {
+                        //so if it's not the first day of the month we set the first payment date to next month
+                        $dueDatePerEcheance->day = 1;
+                        $dueDatePerEcheance->addMonth();
+                    }                                   
+
+                }else if($request->monthEndPaying)
+                {
+                    $dueDatePerEcheance = new Carbon('last day of this Month');
+                }else
+                {
+                    $dueDatePerEcheance = new Carbon($request->payingDate);
+                }
+                
+                $originalDueDay = $dueDatePerEcheance->day;
+                // cause it may change if for example the payment should be each 30th of month, on februray it would be 28th or 29th.
+                
+                $result = true;
+                for ($i=0; $i < $dividedBy; $i++) { 
+                    $echeance = new Echeance();
+                    $echeance->sommeRestante = $pricePerEcheance;
+                    $echeance->dueDate = $dueDatePerEcheance;
+                    $echeance->addedBy = Auth::user()->id;
+                    $result = $result && $fact->echeances()->save($echeance);
+                    //incrementing the date
+                    if($request->monthEndPaying)
+                    {
+                        // setting the next date to the last day of the next month
+                        $dueDatePerEcheance->startOfMonth()->addMonth()->endOfMonth();
+                    }else
+                    {
+                        //getting the last day of next month
+                        $dueDatePerEcheance->startOfMonth()->addMonth()->endOfMonth();
+                        //if original due day is less than the end of the month, then we set the day to the orignal due day, else we leave it as it is
+
+                        if($originalDueDay <= $dueDatePerEcheance->day )
+                        {
+                            $dueDatePerEcheance->day = $originalDueDay;
+                        }
+                    }
+                }
+                if($result)
+                {
+                    return response()->json([
+                        'message' => 'Facture Echeances added successfully'        
+                    ]
+                    ,200);
+                }                
+
         }
 
         return response()->json(['message'=>'Facture not found'],404);
 
+    }
+
+    /**
+     * get echeances of this Facture
+     * @param int id of Facture
+     */
+    public function getPaiements(int $id)
+    {
+        $fact = Facture::find($id);
+        if($fact)
+        {
+            return \App\Http\Resources\PaiementResource::collection($fact->paiements);
+        }
+        return response()->json(['message'=>'Facture not found'],404);
+    }
+
+    
+    /**
+     * set a paiement for this Facture
+     * @param Request
+     * @param int id of Facture
+     */
+    public function setPaiement(Request $request, int $id)
+    {
+        $fact = Facture::find($id);
+        if($fact)
+        {
+            $this->validate($request,[
+            'sommePayee' => 'required|numeric|min:0|max:'.$fact->sommeRestante
+            ]);
+            $paiement = new \App\Paiement($request->all());
+            $paiement->addedBy = Auth::user()->id;
+            $sommePayee = $paiement->sommePayee;
+            if(count($fact->echeances))
+            {
+                while($fact->echeanceNonPayee && $sommePayee > 0)
+                {
+                    $echeanceNonPayee = $fact->echeanceNonPayee;
+                    if( $echeanceNonPayee->sommeRestante > $sommePayee)
+                    {
+                        $echeanceNonPayee->sommeRestante -= $sommePayee;
+                        $echeanceNonPayee->sommePayee += $sommePayee;
+                        $sommePayee = 0;
+                        $echeanceNonPayee->save();
+                    }else
+                    {
+                        $echeanceNonPayee->sommePayee += $echeanceNonPayee->sommeRestante;
+                        $sommePayee -= $echeanceNonPayee->sommeRestante;
+                        $echeanceNonPayee->sommeRestante = 0;                        
+                        
+                        $echeanceNonPayee->save();
+                    }
+                }               
+            }
+            if($fact->paiements()->save($paiement))
+            {
+                return response()->json(['message'=>'Paiement saved'],200);
+            }
+            
+        }
+        return response()->json(['message'=>'Facture not found'],404);
     }
 }

@@ -34,7 +34,6 @@ class FactureResource extends Resource
             "destId" => $this->destId,
             "destAssujetiTVA" => $this->destAssujetiTVA,
             "destNumTVA" => $this->destNumTVA,
-            "TVA_groups" => $this->TVA_groups,
             "prixVenteHT" => $this->prixVenteHT,
             "prixVenteTTC" =>$this->prixVenteTTC,
             "reduction" => $this->reduction,
