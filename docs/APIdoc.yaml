@@ -1299,7 +1299,7 @@ paths:
         - in: "path"
           name: "id"
           type: "integer"
-          description: "if of the Facture"
+          description: "id of the Facture"
           required: true
         - in: "body"
           name: "entry_id"
@@ -1312,9 +1312,149 @@ paths:
           required: true
         responses:
           200:
-            description: "Facture updated"
+            description: "Livraison added"
           404:
             description: "Facture not found"
+  /factures/setPaiement/{id}:
+      put:
+        tags:
+            - "factures"
+        summary: "add a Paiement for this Facture"
+        parameters:
+        - in: "path"
+          name: "id"
+          type: "integer"
+          description: "id of the Facture"
+          required: true
+        - in: "body"
+          name: "sommePayee"
+          type: "number"
+          required: true
+        responses:
+          200:
+            description: "Paiement saved"
+          404:
+            description: "Facture not found"
+  /factures/getPaiements/{id}:
+      get:
+        tags:
+            - "factures"
+        summary: "get all saved Paiementss for this Facture"
+        parameters:
+        - in: "path"
+          name: "id"
+          type: "integer"
+          description: "id of the Facture"
+          required: true
+        
+        responses:
+          200:
+            description: "Paiement saved"
+            schema:
+              type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                      id:
+                        type: "integer"
+                      sommePayee:
+                        type: "number"
+                      addedBy:
+                        type: "integer"
+                      document_id:
+                        type: "integer"
+                      document_type:
+                        type: "string"
+                        description: "indicates which type of document it is"
+                      created_at:
+                        type: 'timestamp'
+                      updated_at:
+                        type: 'timestamp'
+          404:
+            description: "Facture not found"
+  /factures/setEcheances/{id}:
+      put:
+        tags:
+            - "factures"
+        summary: "set the  Echeances (paying dates) for this Facture"       
+        parameters:
+        - in: "path"
+          name: "id"
+          type: "integer"
+          description: "id of the Facture"
+          required: true
+        - in: "body"
+          name: "monthStartPaying"
+          type: "boolean"
+          required: "true if neither PayingDate nor monthEndPaying paremeters are present"
+          description: "set to true in order to set payments at the start of each month of the paying period"
+        - in: "body"
+          name: "monthEndPaying"
+          type: "boolean"
+          required: "true if neither PayingDate nor monthStartPaying paremeters are present"
+          description: "set to true in order to set payments at the end of each month of the paying period,
+          will be taken into account only if monthStartPaying parameter is absent or set to false"
+        - in: "body"
+          name: "payingDate"
+          type: "date"
+          required: "true if neither monthStartPaying nor monthEndPaying paremeters are present"
+          description: "the starting date of payments, the same day will be set as the payment date of each month of the paying period, 
+          will be taken into account only if both  monthStartPaying and monthEndPayingparameter are absent or set to false"          
+        - in: "body"
+          name: "dividedBy"
+          type: "integer"
+          required: true
+          description: "On how many times should this Facture be paid"
+        responses:
+            200:
+              description: "Paiement saved"
+            404:
+              description: "Facture not found"
+  /factures/getEcheances/{id}:
+      get:
+        tags:
+            - "factures"
+        summary: "get the  Echeances (paying dates) for this Facture"       
+        parameters:
+        - in: "path"
+          name: "id"
+          type: "integer"
+          description: "id of the Facture"
+          required: true
+        responses:
+            200:
+              schema:
+              type: "object"
+              properties:
+                data:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                      id:
+                        type: "integer"
+                      sommePayee:
+                        type: "number"
+                      sommeRestante:
+                        type: "number"
+                      dueDate:
+                        type: "date"
+                      document_id:
+                        type: "integer"
+                      document_type:
+                        type: "string"
+                        description: "indicates which type of document it is"
+                      created_at:
+                        type: 'timestamp'
+                      updated_at:
+                        type: 'timestamp'                      
+                
+            404:
+              description: "Facture not found"
+  
   /factures/toggleAbandonnee/{id}:
       put:
         tags:
